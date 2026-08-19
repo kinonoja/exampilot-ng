@@ -27,11 +27,12 @@ describe("Tutor Free allowance service flow", () => {
       id: 9,
       userId: 1,
       topic: "Algebra",
-      mode: "guided",
+      mode: null,
       messages: [{ role: "assistant", content: "Would you like the answer directly or should we work it out?", createdAt: "2026-08-19T08:00:00.000Z" }],
       inputTokens: 0,
       outputTokens: 0,
       estimatedCostMicrousd: 0,
+      chargeableRequests: 0,
     };
     state.db = {
       select: () => {
@@ -39,7 +40,7 @@ describe("Tutor Free allowance service flow", () => {
         if (call % 2 === 0) {
           return { from: () => ({ where: () => ({ limit: async () => [state.conversation] }) }) };
         }
-        return { from: () => ({ where: async () => [{ messages: state.conversation.messages }] }) };
+        return { from: () => ({ where: async () => [{ chargeableRequests: state.conversation.chargeableRequests }] }) };
       },
       update: () => ({
         set: (values: Record<string, unknown>) => ({
@@ -49,11 +50,13 @@ describe("Tutor Free allowance service flow", () => {
     };
   });
 
-  it("allows one message, rejects a second academic message in the same session, and still returns a caring boundary response", async () => {
-    await expect(sendTutorMessage(1, { conversationId: 9, message: "Help me understand this equation" })).resolves.toMatchObject({
+  it("persists a natural guided choice, avoids the repeat prompt, rejects a second academic message, and keeps caring boundaries available", async () => {
+    await expect(sendTutorMessage(1, { conversationId: 9, message: "We should work together" })).resolves.toMatchObject({
       mode: "guided",
       usage: { inputTokens: 120, outputTokens: 24 },
     });
+    expect(state.conversation.mode).toBe("guided");
+    expect(state.conversation.messages.at(-1).content).not.toContain("Would you like the answer directly");
 
     await expect(sendTutorMessage(1, { conversationId: 9, message: "Can you give another example?" })).rejects.toThrow("used today’s Free Tutor question");
 

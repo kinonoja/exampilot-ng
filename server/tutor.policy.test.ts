@@ -6,6 +6,7 @@ describe("Tutor behavior policy", () => {
   it("recognises direct and guided mode choices, including mid-session wording", () => {
     expect(detectTutorMode("Please just give me the answer")).toBe("direct");
     expect(detectTutorMode("Can you help me understand and work it out?")).toBe("guided");
+    expect(detectTutorMode("We should work together")).toBe("guided");
     expect(detectTutorMode("What is biology?")).toBeNull();
   });
 

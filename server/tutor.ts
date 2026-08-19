@@ -23,7 +23,7 @@ function todayRange(now = new Date()) {
 export function detectTutorMode(message: string): TutorMode | null {
   const normalized = message.toLowerCase().trim();
   if (/\b(just|direct|directly|give)\b.*\b(answer|solution|tell me)\b|^answer me\b/.test(normalized)) return "direct";
-  if (/\b(help me understand|work it out|work through|guide me|socratic|walk me through)\b/.test(normalized)) return "guided";
+  if (/\b(help me understand|work (it )?out|work together|learn together|work through|guide me|socratic|walk me through)\b/.test(normalized)) return "guided";
   return null;
 }
 
@@ -59,10 +59,10 @@ async function getDailyTutorRequestCount(userId: number) {
   if (!db) throw new Error("Tutor usage is currently unavailable.");
   const { start, end } = todayRange();
   const result = await db
-    .select({ messages: tutorConversations.messages })
+    .select({ chargeableRequests: tutorConversations.chargeableRequests })
     .from(tutorConversations)
     .where(and(eq(tutorConversations.userId, userId), gte(tutorConversations.createdAt, start), lt(tutorConversations.createdAt, end)));
-  return result.reduce((total, conversation) => total + (conversation.messages as TutorMessage[]).filter(message => message.role === "user").length, 0);
+  return result.reduce((total, conversation) => total + conversation.chargeableRequests, 0);
 }
 
 async function getQuestionContext(userId: number, questionId: number) {
@@ -142,6 +142,9 @@ export async function sendTutorMessage(userId: number, input: { conversationId: 
   const userMessage: TutorMessage = { role: "user", content: input.message.trim(), createdAt: new Date().toISOString() };
   if (!userMessage.content) throw new Error("Write a question for your tutor first.");
   const boundaryResponse = getTutorBoundaryResponse(userMessage.content);
+  const detectedMode = detectTutorMode(userMessage.content);
+  const mode = detectedMode ?? conversation.mode;
+  const isChargeableRequest = !boundaryResponse && Boolean(mode);
   if (!boundaryResponse) {
     const [profile, dailyTutorRequestCount] = await Promise.all([getStudentProfile(userId), getDailyTutorRequestCount(userId)]);
     if (!profile) throw new Error("Your student profile could not be found.");
@@ -152,8 +155,6 @@ export async function sendTutorMessage(userId: number, input: { conversationId: 
     });
     if (!entitlement.canUseTutor) throw new Error("You have used today’s Free Tutor question. Upgrade to Pro for unlimited Tutor help.");
   }
-  const detectedMode = detectTutorMode(userMessage.content);
-  const mode = detectedMode ?? conversation.mode;
   const questionContext = input.questionId ? await getQuestionContext(userId, input.questionId) : null;
   let assistantContent: string;
   let usage = { inputTokens: 0, outputTokens: 0, estimatedCostMicrousd: 0 };
@@ -195,6 +196,7 @@ export async function sendTutorMessage(userId: number, input: { conversationId: 
       inputTokens: conversation.inputTokens + usage.inputTokens,
       outputTokens: conversation.outputTokens + usage.outputTokens,
       estimatedCostMicrousd: conversation.estimatedCostMicrousd + usage.estimatedCostMicrousd,
+      chargeableRequests: conversation.chargeableRequests + (isChargeableRequest ? 1 : 0),
     })
     .where(eq(tutorConversations.id, conversation.id));
   return { id: conversation.id, mode, messages, usage };

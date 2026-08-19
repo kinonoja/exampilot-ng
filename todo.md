@@ -24,3 +24,6 @@
 - [x] Enforce the Free Tutor allowance on each chargeable Tutor request and test the same-session limit
 - [x] Correct the checked-in Tutor migration so it fully matches the schema
 - [x] Add service-flow coverage proving a second Free Tutor message in the same session is rejected
+- [x] Diagnose and fix the Tutor mode-selection loop, then verify the stored session history
+- [x] Ensure unanswered mode-choice replies do not consume the Free Tutor question allowance
+- [x] Verify a natural guided reply persists mode and prevents the repeated mode-choice prompt

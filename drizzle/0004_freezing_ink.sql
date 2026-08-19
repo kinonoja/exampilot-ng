@@ -1,0 +1,1 @@
+ALTER TABLE `tutor_conversations` ADD `chargeableRequests` int DEFAULT 0 NOT NULL;

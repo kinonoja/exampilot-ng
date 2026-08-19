@@ -218,6 +218,7 @@ export const tutorConversations = mysqlTable(
     inputTokens: int("inputTokens").default(0).notNull(),
     outputTokens: int("outputTokens").default(0).notNull(),
     estimatedCostMicrousd: int("estimatedCostMicrousd").default(0).notNull(),
+    chargeableRequests: int("chargeableRequests").default(0).notNull(),
     createdAt: timestamp("createdAt").defaultNow().notNull(),
     updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
   },
