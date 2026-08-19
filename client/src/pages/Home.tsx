@@ -1,33 +1,13 @@
+import { ArrowRight, BookOpenCheck, ChartNoAxesCombined, CircleCheck, Sparkles, Timer } from "lucide-react";
+import { useLocation } from "wouter";
 import { useAuth } from "@/_core/hooks/useAuth";
+import { startLogin } from "@/const";
 import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
-import { Streamdown } from 'streamdown';
+import { ExamMark } from "@/components/ExamMark";
 
-/**
- * All content in this page are only for example, replace with your own feature implementation
- * When building pages, remember your instructions in Frontend Workflow, Frontend Best Practices, Design Guide and Common Pitfalls
- */
 export default function Home() {
-  // The useAuth hook provides authentication state.
-  // To implement login/logout, call logout(), or start login from an event
-  // handler: onClick={() => startLogin()} (imported from "@/const"). Never call
-  // startLogin() during render (no href={startLogin()}) — it mints a one-time
-  // nonce cookie and must run only at the moment of navigation.
-  let { user, loading, error, isAuthenticated, logout } = useAuth();
-
-  // If theme is switchable in App.tsx, we can implement theme toggling like this:
-  // const { theme, toggleTheme } = useTheme();
-
-  return (
-    <div className="min-h-screen flex flex-col">
-      <main>
-        {/* Example: lucide-react for icons */}
-        <Loader2 className="animate-spin" />
-        Example Page
-        {/* Example: Streamdown for markdown rendering */}
-        <Streamdown>Any **markdown** content</Streamdown>
-        <Button variant="default">Example Button</Button>
-      </main>
-    </div>
-  );
+  const [, setLocation] = useLocation();
+  const { isAuthenticated } = useAuth();
+  const enterApp = () => isAuthenticated ? setLocation("/dashboard") : startLogin();
+  return <div className="min-h-screen overflow-x-hidden bg-[#f9f6ef] text-slate-950"><header className="container flex h-20 items-center justify-between"><ExamMark /><Button onClick={enterApp} variant="outline" className="rounded-xl border-slate-300 bg-white px-4 text-slate-950 hover:bg-slate-100">{isAuthenticated ? "My dashboard" : "Sign in"}</Button></header><main><section className="container pb-12 pt-10 sm:pb-20 sm:pt-16"><div className="grid items-center gap-10 lg:grid-cols-[1.05fr_0.95fr]"><div><p className="font-mono text-[11px] font-bold uppercase tracking-[0.19em] text-emerald-700">A study space built for Nigeria</p><h1 className="mt-4 max-w-3xl font-display text-5xl font-bold leading-[0.96] tracking-[-0.065em] sm:text-6xl">More than past questions. <span className="text-emerald-700">A clearer path to passing.</span></h1><p className="mt-6 max-w-xl text-base leading-7 text-slate-600">ExamPilot helps JAMB, WAEC, NECO, and NABTEB candidates practice with purpose — one question, one explanation, and one better decision at a time.</p><div className="mt-8 flex flex-col gap-3 sm:flex-row"><Button onClick={enterApp} className="h-12 rounded-xl bg-slate-950 px-6 text-white hover:bg-slate-800">Start your free practice <ArrowRight className="ml-2 h-4 w-4" /></Button><button onClick={() => document.getElementById("how-it-works")?.scrollIntoView({ behavior: "smooth" })} className="h-12 rounded-xl px-4 text-sm font-semibold text-slate-700 hover:text-slate-950">See how it works</button></div><p className="mt-4 text-xs text-slate-500">Free includes 5 practice questions daily. No card required to get started.</p></div><div className="relative mx-auto w-full max-w-md"><div className="absolute -inset-5 rounded-[2.5rem] bg-lime-200/70 blur-2xl" /><div className="relative rounded-[2rem] bg-slate-950 p-5 text-white shadow-2xl"><div className="flex items-center justify-between"><span className="rounded-full bg-white/10 px-3 py-1.5 font-mono text-[10px] font-bold uppercase tracking-wider text-lime-300">JAMB · Biology</span><span className="text-xs text-slate-400">01 / 05</span></div><p className="mt-8 font-display text-2xl font-bold leading-8">Which cell structure controls what enters and leaves a cell?</p><div className="mt-6 space-y-3">{["Cell membrane", "Nucleus", "Vacuole", "Cell wall"].map((answer, index) => <div key={answer} className={`flex items-center gap-3 rounded-2xl border p-3.5 ${index === 0 ? "border-lime-300 bg-lime-300 text-slate-950" : "border-white/10 bg-white/5 text-slate-200"}`}><span className="grid h-6 w-6 place-items-center rounded-lg bg-black/10 text-xs font-bold">{String.fromCharCode(65 + index)}</span><span className="text-sm font-semibold">{answer}</span>{index === 0 ? <CircleCheck className="ml-auto h-4 w-4" /> : null}</div>)}</div><div className="mt-5 rounded-2xl bg-white/10 p-4"><p className="text-sm font-semibold text-lime-300">Correct — keep going.</p><p className="mt-1 text-xs leading-5 text-slate-300">The cell membrane regulates the movement of substances into and out of a cell.</p></div></div></div></div></section><section id="how-it-works" className="border-y border-slate-200 bg-white py-14 sm:py-20"><div className="container"><div className="max-w-xl"><p className="font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700">Designed for a steady climb</p><h2 className="mt-3 font-display text-3xl font-bold tracking-[-0.045em] sm:text-4xl">Study less randomly. Improve more deliberately.</h2></div><div className="mt-10 grid gap-5 md:grid-cols-3">{[{ icon: BookOpenCheck, number: "01", title: "Choose your focus", text: "Filter practice by exam, subject, topic, and difficulty so every session has a purpose." }, { icon: Timer, number: "02", title: "Learn from every answer", text: "Get immediate feedback and a clear explanation instead of simply seeing a score." }, { icon: ChartNoAxesCombined, number: "03", title: "Unlock your next level", text: "Pro turns daily practice into an always-open study companion with full mock access." }].map(item => <article key={item.number} className="rounded-3xl border border-slate-200 bg-[#f9f6ef] p-6"><div className="flex items-center justify-between"><item.icon className="h-6 w-6 text-emerald-700" /><span className="font-mono text-xs font-bold text-slate-400">{item.number}</span></div><h3 className="mt-8 font-display text-xl font-bold">{item.title}</h3><p className="mt-3 text-sm leading-6 text-slate-600">{item.text}</p></article>)}</div></div></section><section className="container py-14 sm:py-20"><div className="overflow-hidden rounded-[2rem] bg-emerald-700 px-6 py-10 text-white sm:px-10"><Sparkles className="h-7 w-7 text-lime-200" /><h2 className="mt-5 max-w-2xl font-display text-3xl font-bold tracking-[-0.045em] sm:text-4xl">Your next practice session can start in minutes.</h2><p className="mt-3 max-w-xl text-sm leading-6 text-emerald-100">Create your study target, answer original syllabus-aligned questions, and build the habit before the pressure arrives.</p><Button onClick={enterApp} className="mt-6 h-11 rounded-xl bg-lime-300 text-slate-950 hover:bg-lime-200">Create my free study space <ArrowRight className="ml-2 h-4 w-4" /></Button></div></section></main><footer className="border-t border-slate-200 py-6"><div className="container flex flex-wrap items-center justify-between gap-3 text-xs text-slate-500"><ExamMark /><p>Original practice content. Build confidence with every attempt.</p></div></footer></div>;
 }

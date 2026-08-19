@@ -1,0 +1,1 @@
+ALTER TABLE `subscriptions` ADD `paystackEmailToken` varchar(128);

@@ -8,6 +8,7 @@ import { registerStorageProxy } from "./storageProxy";
 import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
+import { handlePaystackWebhook, isValidPaystackSignature } from "../paystack";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -31,6 +32,20 @@ async function findAvailablePort(startPort: number = 3000): Promise<number> {
 async function startServer() {
   const app = express();
   const server = createServer(app);
+  app.post("/api/webhooks/paystack", express.raw({ type: "application/json" }), async (req, res) => {
+    const rawBody = req.body as Buffer;
+    if (!isValidPaystackSignature(rawBody, req.header("x-paystack-signature"))) {
+      res.status(401).json({ error: "Invalid Paystack signature" });
+      return;
+    }
+    try {
+      await handlePaystackWebhook(JSON.parse(rawBody.toString("utf8")));
+      res.sendStatus(200);
+    } catch (error) {
+      console.error("[Paystack webhook] Processing failed", error);
+      res.sendStatus(500);
+    }
+  });
   // Configure body parser with larger size limit for file uploads
   app.use(express.json({ limit: "50mb" }));
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
