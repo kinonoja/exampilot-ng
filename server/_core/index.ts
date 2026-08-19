@@ -32,6 +32,9 @@ async function findAvailablePort(startPort: number = 3000): Promise<number> {
 async function startServer() {
   const app = express();
   const server = createServer(app);
+  app.get("/api/webhooks/paystack", (_req, res) => {
+    res.status(200).json({ status: "ready", service: "paystack-webhook" });
+  });
   app.post("/api/webhooks/paystack", express.raw({ type: "application/json" }), async (req, res) => {
     const rawBody = req.body as Buffer;
     if (!isValidPaystackSignature(rawBody, req.header("x-paystack-signature"))) {

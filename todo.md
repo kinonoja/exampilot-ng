@@ -17,3 +17,4 @@
 - [x] Build the mobile-first landing page and authenticated student dashboard
 - [x] Add and run Vitest coverage for core business rules
 - [x] Validate the interface on desktop and mobile previews
+- [x] Fix the 404 response for the exact preview Paystack webhook path
