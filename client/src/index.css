@@ -113,15 +113,61 @@
   --sidebar-ring: oklch(0.488 0.243 264.376);
 }
 
+/* ExamPilot design system: calm academic canvas, distinct blue actions, and green success states. */
+:root {
+  --ep-canvas: #F4F7F8;
+  --ep-surface: #FFFFFF;
+  --ep-ink: #162235;
+  --ep-muted: #607082;
+  --ep-primary: #245EA8;
+  --ep-secondary: #163A5F;
+  --ep-success: #16775A;
+  --ep-status: #B5473A;
+  --ep-border: #DDE5EA;
+  --primary: var(--ep-primary);
+  --primary-foreground: #FFFFFF;
+  --secondary: #E8F0FA;
+  --secondary-foreground: var(--ep-secondary);
+  --background: var(--ep-canvas);
+  --foreground: var(--ep-ink);
+  --card: var(--ep-surface);
+  --card-foreground: var(--ep-ink);
+  --popover: var(--ep-surface);
+  --popover-foreground: var(--ep-ink);
+  --muted: #EEF3F6;
+  --muted-foreground: var(--ep-muted);
+  --accent: #E8F0FA;
+  --accent-foreground: var(--ep-secondary);
+  --destructive: var(--ep-status);
+  --destructive-foreground: #FFFFFF;
+  --border: var(--ep-border);
+  --input: var(--ep-border);
+  --ring: var(--ep-primary);
+  --sidebar: var(--ep-secondary);
+  --sidebar-foreground: #FFFFFF;
+  --sidebar-primary: var(--ep-primary);
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #214A75;
+  --sidebar-accent-foreground: #FFFFFF;
+  --sidebar-border: rgba(255,255,255,0.14);
+  --sidebar-ring: var(--ep-primary);
+  --chart-1: var(--ep-primary);
+  --chart-2: var(--ep-success);
+  --chart-3: #6B8DB8;
+  --chart-4: var(--ep-secondary);
+  --chart-5: var(--ep-status);
+  --radius: 0.75rem;
+}
+
 @layer base {
-  .font-display { font-family: "Source Serif 4", Georgia, serif; }
-  .font-mono { font-family: "DM Mono", monospace; }
+  .font-display { font-family: "Outfit", sans-serif; }
+  .font-mono { font-family: "Manrope", sans-serif; }
   * {
     @apply border-border outline-ring/50;
   }
   body {
     @apply bg-background text-foreground;
-    font-family: "Plus Jakarta Sans", sans-serif;
+    font-family: "Manrope", sans-serif;
   }
   button:not(:disabled),
   [role="button"]:not([aria-disabled="true"]),
@@ -137,6 +183,14 @@
 }
 
 @layer components {
+  .mastery-rail { display: flex; min-height: 272px; flex-direction: column; align-items: center; justify-content: space-between; position: relative; }
+  .mastery-rail::before { content: ""; position: absolute; top: 16px; bottom: 16px; width: 1px; background: rgba(201, 228, 254, 0.45); }
+  .mastery-node { z-index: 1; display: grid; height: 32px; width: 32px; place-items: center; border-radius: 999px; border: 1px solid rgba(201, 228, 254, 0.5); background: #163A5F; color: #C9E4FE; font-size: 12px; font-weight: 800; }
+  .mastery-node.is-active { border-color: #FFFFFF; background: #FFFFFF; color: #245EA8; box-shadow: 0 0 0 5px rgba(255,255,255,0.12); }
+  .answer-reveal { transform-origin: top center; }
+  .thinking-dots { display: inline-flex; align-items: center; gap: 3px; }
+  .thinking-dots i { display: block; width: 4px; height: 4px; border-radius: 999px; background: #607082; }
+  .thinking-dots-on-primary i { background: #FFFFFF; }
   /**
    * Custom container utility that centers content and adds responsive padding.
    *
@@ -163,6 +217,15 @@
     min-width: 0;
   }
 
+  @media (prefers-reduced-motion: no-preference) {
+    .mastery-node { transition: transform 180ms cubic-bezier(0.23, 1, 0.32, 1), box-shadow 180ms cubic-bezier(0.23, 1, 0.32, 1); }
+    .mastery-node.is-active:hover { transform: scale(1.06); }
+    .answer-reveal { animation: answer-reveal 200ms cubic-bezier(0.23, 1, 0.32, 1) both; }
+    .thinking-dots i { animation: thinking-dot 900ms ease-in-out infinite; }
+    .thinking-dots i:nth-child(2) { animation-delay: 140ms; }
+    .thinking-dots i:nth-child(3) { animation-delay: 280ms; }
+  }
+
   @media (min-width: 640px) {
     .container {
       padding-left: 1.5rem; /* 24px - tablet padding */
@@ -178,3 +241,6 @@
     }
   }
 }
+
+@keyframes answer-reveal { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes thinking-dot { 0%, 100% { transform: translateY(0); opacity: 0.45; } 45% { transform: translateY(-3px); opacity: 1; } }

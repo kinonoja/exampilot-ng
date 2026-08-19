@@ -5,22 +5,23 @@ import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import DashboardLayout from "./components/DashboardLayout";
-import Billing from "./pages/Billing";
-import Dashboard from "./pages/Dashboard";
-import Home from "./pages/Home";
-import Practice from "./pages/Practice";
-import Tutor from "./pages/Tutor";
+import PremiumBilling from "./pages/PremiumBilling";
+import PremiumDashboard from "./pages/PremiumDashboard";
+import PremiumHome from "./pages/PremiumHome";
+import PremiumPractice from "./pages/PremiumPractice";
+import PremiumTutor from "./pages/PremiumTutor";
+import { MasteryRailMini } from "./components/MasteryRailMini";
 
-const StudentDashboard = () => <DashboardLayout><Dashboard /></DashboardLayout>;
-const StudentPractice = () => <DashboardLayout><Practice /></DashboardLayout>;
-const StudentBilling = () => <DashboardLayout><Billing /></DashboardLayout>;
-const StudentTutor = () => <DashboardLayout><Tutor /></DashboardLayout>;
+const StudentDashboard = () => <DashboardLayout><MasteryRailMini current="focus" /><PremiumDashboard /></DashboardLayout>;
+const StudentPractice = () => <DashboardLayout><MasteryRailMini current="practice" /><PremiumPractice /></DashboardLayout>;
+const StudentBilling = () => <DashboardLayout><MasteryRailMini current="ready" /><PremiumBilling /></DashboardLayout>;
+const StudentTutor = () => <DashboardLayout><MasteryRailMini current="understand" /><PremiumTutor /></DashboardLayout>;
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
   return (
     <Switch>
-      <Route path={"/"} component={Home} />
+      <Route path={"/"} component={PremiumHome} />
       <Route path={"/dashboard"} component={StudentDashboard} />
       <Route path={"/practice"} component={StudentPractice} />
       <Route path={"/tutor"} component={StudentTutor} />

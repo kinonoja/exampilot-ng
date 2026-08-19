@@ -27,3 +27,17 @@
 - [x] Diagnose and fix the Tutor mode-selection loop, then verify the stored session history
 - [x] Ensure unanswered mode-choice replies do not consume the Free Tutor question allowance
 - [x] Verify a natural guided reply persists mode and prevents the repeated mode-choice prompt
+- [x] Prepare and obtain approval for the next-phase visual design plan before implementation
+- [x] Apply the revised accessible primary and success color distinction plus the approved signature visual motif
+- [x] Polish landing and pricing, then present its preview before moving to the dashboard
+- [x] Propagate and verify the revised primary/success distinction and Mastery Rail motif across dashboard, practice, Tutor, and billing
+- [x] Capture non-landing previews to verify the revised color system remains accessible across the student experience
+- [x] Audit every frontend surface for emoji or legacy visual tokens and replace them with the approved Lucide/token system
+- [x] Polish dashboard, then present its preview before moving to practice
+- [x] Polish practice, then present its preview before moving to Tutor
+- [x] Polish Tutor, then present its preview before moving to billing
+- [x] Polish billing and present its preview before final visual validation
+- [x] Add a Mastery Rail motif variant to practice, Tutor, and billing and verify it in previews
+- [x] Audit all shared user-facing components for emoji and legacy palette classes, then verify the cleaned UI system
+- [x] Complete a project-wide audit of reachable user-facing pages and shared components for emoji and legacy palette styling
+- [x] Verify the cleaned UpgradePrompt limit state in a rendered student-facing screen
