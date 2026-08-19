@@ -18,6 +18,7 @@ export const difficultyValues = ["easy", "medium", "hard"] as const;
 export const mockExamStatusValues = ["in_progress", "submitted", "expired"] as const;
 export const paymentStatusValues = ["pending", "active", "failed", "cancelled", "expired"] as const;
 export const planValues = ["free", "pro", "exam_intensive"] as const;
+export const tutorModeValues = ["direct", "guided"] as const;
 
 /** Core identity record supplied by Manus OAuth and enriched by student onboarding. */
 export const users = mysqlTable("users", {
@@ -213,7 +214,12 @@ export const tutorConversations = mysqlTable(
       .references(() => users.id, { onDelete: "cascade" }),
     messages: json("messages").$type<{ role: "user" | "assistant"; content: string; createdAt: string }[]>().notNull(),
     topic: varchar("topic", { length: 255 }),
+    mode: mysqlEnum("mode", tutorModeValues),
+    inputTokens: int("inputTokens").default(0).notNull(),
+    outputTokens: int("outputTokens").default(0).notNull(),
+    estimatedCostMicrousd: int("estimatedCostMicrousd").default(0).notNull(),
     createdAt: timestamp("createdAt").defaultNow().notNull(),
+    updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
   },
   table => [index("tutor_conversations_user_idx").on(table.userId, table.createdAt)],
 );

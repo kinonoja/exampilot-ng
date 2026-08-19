@@ -18,3 +18,9 @@
 - [x] Add and run Vitest coverage for core business rules
 - [x] Validate the interface on desktop and mobile previews
 - [x] Fix the 404 response for the exact preview Paystack webhook path
+- [x] Confirm a Paystack test-mode signed webhook delivery reaches the preview endpoint with HTTP 200
+- [x] Implement only Phase 3 Sub-step 3a AI Tutor foundation and present its implementation-specific tutor prompt for review
+- [x] Add approved Tutor boundaries, in-session mode switching, correct-answer handling, and caring distress redirect behavior
+- [x] Enforce the Free Tutor allowance on each chargeable Tutor request and test the same-session limit
+- [x] Correct the checked-in Tutor migration so it fully matches the schema
+- [x] Add service-flow coverage proving a second Free Tutor message in the same session is rejected

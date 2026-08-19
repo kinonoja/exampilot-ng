@@ -9,10 +9,12 @@ import Billing from "./pages/Billing";
 import Dashboard from "./pages/Dashboard";
 import Home from "./pages/Home";
 import Practice from "./pages/Practice";
+import Tutor from "./pages/Tutor";
 
 const StudentDashboard = () => <DashboardLayout><Dashboard /></DashboardLayout>;
 const StudentPractice = () => <DashboardLayout><Practice /></DashboardLayout>;
 const StudentBilling = () => <DashboardLayout><Billing /></DashboardLayout>;
+const StudentTutor = () => <DashboardLayout><Tutor /></DashboardLayout>;
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -21,6 +23,7 @@ function Router() {
       <Route path={"/"} component={Home} />
       <Route path={"/dashboard"} component={StudentDashboard} />
       <Route path={"/practice"} component={StudentPractice} />
+      <Route path={"/tutor"} component={StudentTutor} />
       <Route path={"/billing"} component={StudentBilling} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}

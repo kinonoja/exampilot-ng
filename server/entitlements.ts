@@ -1,4 +1,5 @@
 export const FREE_DAILY_PRACTICE_LIMIT = 5;
+export const FREE_DAILY_TUTOR_LIMIT = 1;
 
 export type EntitlementInput = {
   subscriptionStatus: "free" | "pro" | "past_due" | "cancelled";
@@ -6,14 +7,33 @@ export type EntitlementInput = {
   dailyAttemptCount: number;
 };
 
+export function hasActivePaidAccess(
+  subscriptionStatus: EntitlementInput["subscriptionStatus"],
+  subscriptionExpiresAt: Date | null,
+  now = new Date(),
+) {
+  return subscriptionStatus !== "free" && (!subscriptionExpiresAt || subscriptionExpiresAt > now);
+}
+
 export function getPracticeEntitlement(input: EntitlementInput, now = new Date()) {
-  const isWithinPaidPeriod =
-    input.subscriptionStatus !== "free" &&
-    (!input.subscriptionExpiresAt || input.subscriptionExpiresAt > now);
+  const isWithinPaidPeriod = hasActivePaidAccess(input.subscriptionStatus, input.subscriptionExpiresAt, now);
   return {
     isPro: isWithinPaidPeriod,
     dailyAttemptCount: input.dailyAttemptCount,
     dailyLimit: FREE_DAILY_PRACTICE_LIMIT,
     canPractice: isWithinPaidPeriod || input.dailyAttemptCount < FREE_DAILY_PRACTICE_LIMIT,
+  };
+}
+
+export function getTutorEntitlement(
+  input: Omit<EntitlementInput, "dailyAttemptCount"> & { dailyTutorRequestCount: number },
+  now = new Date(),
+) {
+  const isPro = hasActivePaidAccess(input.subscriptionStatus, input.subscriptionExpiresAt, now);
+  return {
+    isPro,
+    dailyTutorRequestCount: input.dailyTutorRequestCount,
+    dailyLimit: FREE_DAILY_TUTOR_LIMIT,
+    canUseTutor: isPro || input.dailyTutorRequestCount < FREE_DAILY_TUTOR_LIMIT,
   };
 }

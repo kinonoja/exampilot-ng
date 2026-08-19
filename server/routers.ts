@@ -15,6 +15,7 @@ import { systemRouter } from "./_core/systemRouter";
 import { protectedProcedure, publicProcedure, router } from "./_core/trpc";
 import { cancelProSubscription, initializeProCheckout, verifyAndGrantProAccess } from "./paystack";
 import { getPracticeEntitlement } from "./entitlements";
+import { sendTutorMessage, startTutorConversation } from "./tutor";
 
 const profileInput = z.object({
   examTarget: z.enum(["JAMB", "WAEC", "NECO", "NABTEB"]),
@@ -102,6 +103,14 @@ export const appRouter = router({
       .input(z.object({ reference: z.string().min(8).max(128) }))
       .mutation(({ ctx, input }) => verifyAndGrantProAccess(ctx.user.id, input.reference)),
     cancelSubscription: protectedProcedure.mutation(({ ctx }) => cancelProSubscription(ctx.user.id)),
+  }),
+  tutor: router({
+    start: protectedProcedure
+      .input(z.object({ topic: z.string().trim().min(2).max(255).optional(), questionId: z.number().int().positive().optional() }))
+      .mutation(({ ctx, input }) => startTutorConversation(ctx.user.id, input)),
+    send: protectedProcedure
+      .input(z.object({ conversationId: z.number().int().positive(), message: z.string().trim().min(1).max(2000), questionId: z.number().int().positive().optional() }))
+      .mutation(({ ctx, input }) => sendTutorMessage(ctx.user.id, input)),
   }),
 });
 

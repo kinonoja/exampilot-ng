@@ -22,6 +22,13 @@
       "when": 1787176522092,
       "tag": "0002_lyrical_madrox",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1787178999399,
+      "tag": "0003_wise_master_chief",
+      "breakpoints": true
     }
   ]
 }
