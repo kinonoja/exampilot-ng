@@ -37,3 +37,7 @@ The compact Mastery Rail now appears at the top of Dashboard, Practice, Tutor, a
 ## Upgrade-state verification
 
 The rendered mobile daily-limit state confirms that the contextual UpgradePrompt uses the approved blue primary, neutral surfaces, Lucide lock/action icons, and the existing Free-tier wording. It was checked through a development-only visual harness without altering the account’s access data.
+
+## AI practice generation
+
+The dashboard now exposes the designed “Build your next practice set” panel with a topic selector and the requested generation action. In an authenticated session it loads the existing topic catalogue and preserves the compact, tokenized Topic Signals surface.

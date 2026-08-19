@@ -1,14 +1,16 @@
 import { useEffect, useMemo, useState } from "react";
 import { BookOpenCheck, BrainCircuit, CheckCircle2, ChevronRight, CircleAlert, Clock3, Compass, RotateCcw, XCircle } from "lucide-react";
-import { useLocation } from "wouter";
+import { useLocation, useSearch } from "wouter";
 import { Button } from "@/components/ui/button";
 import { UpgradePrompt } from "@/components/UpgradePrompt";
 import { trpc } from "@/lib/trpc";
+import { topicIdFromSearch } from "@/lib/practiceRoute";
 
 type Difficulty = "easy" | "medium" | "hard";
 
 export default function PremiumPractice() {
   const [, setLocation] = useLocation();
+  const search = useSearch();
   const catalogueQuery = trpc.practice.catalogue.useQuery(undefined, { refetchOnWindowFocus: false });
   const [examId, setExamId] = useState<number>();
   const [subjectId, setSubjectId] = useState<number>();
@@ -18,8 +20,10 @@ export default function PremiumPractice() {
   const [selectedAnswer, setSelectedAnswer] = useState("");
   const [feedback, setFeedback] = useState<{ isCorrect: boolean; correctAnswer: string; explanation: string } | null>(null);
   const [questionStartedAt, setQuestionStartedAt] = useState(() => Date.now());
+  const linkedTopicId = useMemo(() => topicIdFromSearch(search), [search]);
   const accessQuery = trpc.practice.access.useQuery();
   useEffect(() => { if (!examId && catalogueQuery.data?.exams[0]) setExamId(catalogueQuery.data.exams[0].id); }, [catalogueQuery.data, examId]);
+  useEffect(() => { const linkedTopic = catalogueQuery.data?.topics.find(topic => topic.id === linkedTopicId); if (!linkedTopic || !catalogueQuery.data) return; const linkedSubject = catalogueQuery.data.subjects.find(subject => subject.id === linkedTopic.subjectId); if (!linkedSubject) return; setExamId(linkedSubject.examId); setSubjectId(linkedSubject.id); setTopicId(linkedTopic.id); setServedIds([]); }, [catalogueQuery.data, linkedTopicId]);
   const subjects = useMemo(() => (catalogueQuery.data?.subjects ?? []).filter(subject => subject.examId === examId), [catalogueQuery.data, examId]);
   const topics = useMemo(() => (catalogueQuery.data?.topics ?? []).filter(topic => topic.subjectId === subjectId), [catalogueQuery.data, subjectId]);
   const queryInput = useMemo(() => ({ examId: examId ?? 0, subjectId, topicId, difficulty, previousQuestionIds: servedIds }), [examId, subjectId, topicId, difficulty, servedIds]);

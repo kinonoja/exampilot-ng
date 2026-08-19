@@ -41,3 +41,10 @@
 - [x] Audit all shared user-facing components for emoji and legacy palette classes, then verify the cleaned UI system
 - [x] Complete a project-wide audit of reachable user-facing pages and shared components for emoji and legacy palette styling
 - [x] Verify the cleaned UpgradePrompt limit state in a rendered student-facing screen
+- [x] Implement Phase 3 Sub-step 3b: generate and persist 3–5 original AI practice questions for a selected weak topic
+- [x] Add the designed “Generate more practice on this topic” interface and preview it
+- [x] Add automated validation for generated question structure, originality safeguards, and AI-generated persistence
+- [x] Accept Claude structured responses wrapped in optional JSON code fences during practice generation
+- [x] Normalize supported Claude difficulty labels before generated-question validation
+- [x] Handle concise Claude question and explanation fields without weakening generated-question quality safeguards
+- [x] Fix the generated-topic practice handoff so the linked route preselects its exam, subject, and topic filters

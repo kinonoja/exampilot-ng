@@ -16,6 +16,7 @@ import { protectedProcedure, publicProcedure, router } from "./_core/trpc";
 import { cancelProSubscription, initializeProCheckout, verifyAndGrantProAccess } from "./paystack";
 import { getPracticeEntitlement } from "./entitlements";
 import { sendTutorMessage, startTutorConversation } from "./tutor";
+import { generateTopicPracticeQuestions } from "./practiceGeneration";
 
 const profileInput = z.object({
   examTarget: z.enum(["JAMB", "WAEC", "NECO", "NABTEB"]),
@@ -95,6 +96,9 @@ export const appRouter = router({
         const nextAccess = await getPracticeAccess(ctx.user.id);
         return { ...nextAccess, feedback, limitReached: false };
       }),
+    generate: protectedProcedure
+      .input(z.object({ topicId: z.number().int().positive(), count: z.number().int().min(3).max(5).default(3) }))
+      .mutation((opts) => generateTopicPracticeQuestions(opts.input)),
   }),
   billing: router({
     overview: protectedProcedure.query(({ ctx }) => getBillingOverview(ctx.user.id)),
