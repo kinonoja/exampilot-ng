@@ -109,3 +109,14 @@
 - [x] Define and test the future verified-institution guard without manufacturing an unvalidated subject default
 - [x] Save, reopen, edit, and restore a course-direction profile in the browser while confirming subjectDefault remains null
 - [x] Exercise a persisted verified institution state through the protected course-direction read procedure without granting a default
+- [x] Research and document current official JAMB Chemistry and Physics syllabus coverage for the planned expansion
+- [x] Prepare a balanced 40–50-question topic plan for each subject before generating questions
+- [x] Draft five original, quality-checked Chemistry review questions in the existing question-bank format without persisting them
+- [x] Draft five original, quality-checked Physics review questions in the existing question-bank format without persisting them
+- [ ] Present the topic plan and ten-question review sample for approval before generating or saving any full batch
+- [x] Research and document only official, freely accessible WAEC syllabus, format, marking-structure, and sample-question material
+- [x] Research and document only official, freely accessible NECO syllabus, format, marking-structure, and sample-question material
+- [x] Explicitly exclude third-party sites claiming to provide free WAEC or NECO past questions from all content research and generation
+- [x] Separate confirmed official/free source evidence from unverified or restricted material and state the practical research limits
+- [x] Propose the first two or three source-supported WAEC and NECO subjects for originally written practice content
+- [x] Present the WAEC/NECO source report for approval before generating any WAEC or NECO questions

@@ -1,0 +1,27 @@
+# WAEC and NECO Official Public-Material Source Notes
+
+## WAEC Nigeria
+
+| Official URL | Confirmed public information | Use in future content work |
+| --- | --- | --- |
+| [WAEC Nigeria FAQ](https://www.waecnigeria.org/faq) | WAEC lists the currently available core subjects for WASSCE candidates registering in 2026–2027 as English Language and General Mathematics, and names available science, humanities, business, and trade subjects. It states that Citizenship and Heritage Studies and Digital Technologies are not examined until 2028 because their curricula and syllabuses still require development. | Safe for current official subject availability and candidate-registration context. It does **not** provide a subject syllabus, question format, marking scheme, or sample examination question. |
+| [WAEC Nigeria Heads of Departments](https://www.waecnigeria.org/heads-departments) | WAEC publicly identifies its Test Development subject groups, including Science, Mathematics and Technical Subjects, and Arts, Business and Humanities. | Context only; not a content source. |
+| [WAEC e-Learning](https://www.waeconline.org.ng/e-learning/) | WAEC states that its toolkit provides resources for all WAEC-approved subjects and uses analysis of previous examinations to identify candidate weaknesses. | Safe source for examiner-commentary style and quality expectations, not for copying assessment prompts. |
+| [WAEC Mathematics e-Learning](https://www.waeconline.org.ng/e-learning/Mathematics/mathsmain.html), [Chemistry e-Learning](https://www.waeconline.org.ng/e-learning/Chemistry/chemmain.html), and [Physics e-Learning](https://www.waeconline.org.ng/e-learning/Physics/physmain.html) | WAEC describes these as resources to help students understand the standards expected in the final examination, with Chief Examiner commentary on performance, strengths, weaknesses, and expected answers. The Chemistry page additionally states that the reviewed papers had clear, concise rubrics, comprehensible wording, syllabus-scope coverage, and a fair marking scheme. | Safe for high-level style, clarity, and syllabus-coverage research. Do not reproduce the question prompts or expected-answer material. |
+| [WAEC-hosted Bookkeeping & Office Practice syllabus article](https://www.waecnigeria.org/article/bookkeeping-office-practice-2022-2025-wassce-syllabus) | The official article freely links a WAEC-hosted 2022–2025 subject syllabus PDF. Its extracted text states that the subject has two compulsory papers and describes Paper 2 as two sections, including theory questions. | Proof that WAEC publishes at least some subject syllabi freely on its own domain. This older, subject-specific PDF is not a licence to infer the format of Mathematics, Chemistry, or Physics. |
+
+## NECO
+
+| Official URL | Confirmed public information | Use in future content work |
+| --- | --- | --- |
+| [NECO official website](https://neco.gov.ng/) | NECO confirms that it conducts SSCE Internal and SSCE External examinations. Its public site advertises official registration guidelines, timetables, reports, and other documents. The 2026 SSCE External is described as a dual-mode Hybrid CBE and Pen-and-Paper Examination. | Safe for examination identity and official registration/timetable context. The accessible homepage does **not** expose a subject syllabus, question-paper structure, marking scheme, or official sample questions. |
+| [NECO SSCE Internal page](https://neco.gov.ng/exams) and [SSCE External page](https://neco.gov.ng/exams/ssce-external) | NECO confirms the SSCE Internal minimum/maximum subject count and cross-cutting subject-category arrangement. It confirms that the 2026 External examination is dual-mode and links official registration guidelines and a timetable. | Safe for registration and delivery-mode context, but not topic, question-type, or marking-format claims. |
+| [NECO Fees & Payments](https://neco.gov.ng/payment) | NECO’s official fee table lists an SSCE syllabus fee of ₦2,000 and a Chief Examiner’s Report fee of ₦2,500. | Strong evidence that the official syllabus and examiner report are not genuinely free public resources. They must not be acquired through unofficial copies. |
+
+## Explicit exclusions
+
+The following categories were surfaced by search but are excluded from all research and generation: third-party “free WAEC syllabus” pages, third-party “free NECO syllabus” pages, document-hosting copies, and all sites claiming to offer downloadable or online past questions. Their origin and licence cannot be established from the official examining bodies, so they are not a safe source for reproducing question content or imitating paper-specific format.
+
+## Current evidence limit
+
+The official source set found so far supports examination identity, current subject availability, and NECO’s current delivery-mode notice. It does **not yet** support subject-level assessment structure, marking arrangement, or released sample questions. Any proposed practice-content scope must therefore remain conservative until an official subject syllabus or format document is located.
