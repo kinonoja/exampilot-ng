@@ -1,6 +1,6 @@
 import { useAuth } from "@/_core/hooks/useAuth";
 import { startLogin } from "@/const";
-import { BookOpenCheck, CreditCard, LayoutDashboard, LogOut, MessageCircleQuestion, PanelLeft, TimerReset } from "lucide-react";
+import { BookOpenCheck, CreditCard, History, LayoutDashboard, LogOut, MessageCircleQuestion, PanelLeft, TimerReset } from "lucide-react";
 import { useLocation } from "wouter";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -12,6 +12,7 @@ const menuItems = [
   { icon: LayoutDashboard, label: "Dashboard", path: "/dashboard" },
   { icon: BookOpenCheck, label: "Practice", path: "/practice" },
   { icon: TimerReset, label: "Practice Mock", path: "/mock-exam" },
+  { icon: History, label: "Mock history", path: "/mock-history" },
   { icon: MessageCircleQuestion, label: "Tutor", path: "/tutor" },
   { icon: CreditCard, label: "Billing", path: "/billing" },
 ];

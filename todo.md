@@ -73,3 +73,22 @@
 - [x] Build the Practice Mock results and Tutor-linked review experience using the existing student design system
 - [x] Verify manual and automatic completion scores, persisted correctness, results breakdown, and answer review before Sub-step 4c
 - [x] Verify an auto-expired Practice Mock’s stored score and per-question correctness, then open its detailed answer review and Tutor handoff before finalising Sub-step 4b
+- [x] Repeat two independent checks of the completed Sub-step 4b results, scoring persistence, and answer-review behaviour
+- [x] Capture a newly reloaded completed results screen and detailed question review alongside the fresh Sub-step 4b database check
+- [x] Implement only Phase 4 Sub-step 4c: mock history and contextual Free-tier Pro upgrade messaging after mock configuration
+- [x] Add a mock-specific entitlement utility that treats only subscriptionStatus "pro" as unlimited Practice Mock access
+- [x] Add protected mock entitlement and newest-first completed-history procedures, including expired-session scoring before history output
+- [x] Enforce Practice Mock Pro access in the protected start mutation and emit lightweight start/completion lifecycle analytics
+- [x] Add entitlement and history-focused Vitest coverage, including server rejection for a Free mock start
+- [x] Add a history route, dashboard and sidebar access paths, and a mobile-first completed-mock list with results links
+- [x] Show the non-punitive Pro prompt only after a Free learner has configured and explicitly tries to start a valid Practice Mock
+- [x] Verify Free prompt timing, Pro start access, history metadata, and result-link navigation in the running app
+- [x] Finalize every expired unscored Practice Mock before it can appear in history
+- [x] Add completed-only, newest-first, and expired-finalization mock history coverage
+- [x] Add a protected `mock.start` procedure-level test for a Free learner
+- [x] Show an explicit retry state when mock entitlement cannot be checked instead of displaying an upgrade message
+- [x] Verify the contextual Free prompt and billing route with a Free browser session before finalising the access UI
+- [x] Capture a freshly loaded Free-tier billing screen after the mock upgrade CTA and confirm its displayed plan state
+- [x] Confirm the billing overview refetches current entitlement when reached from the Free mock upgrade CTA
+- [x] Suppress stale cached billing entitlement while a fresh route-entry overview is loading
+- [x] Add focused coverage for the billing overview loading guard after tier changes

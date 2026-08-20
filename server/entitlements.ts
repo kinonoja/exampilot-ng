@@ -37,3 +37,16 @@ export function getTutorEntitlement(
     canUseTutor: isPro || input.dailyTutorRequestCount < FREE_DAILY_TUTOR_LIMIT,
   };
 }
+
+export function getPracticeMockEntitlement(
+  subscriptionStatus: EntitlementInput["subscriptionStatus"],
+) {
+  const isPro = subscriptionStatus === "pro";
+  return {
+    isPro,
+    canStartMock: isPro,
+    reason: isPro
+      ? undefined
+      : "Practice Mocks are included with Pro. Upgrade when you are ready to begin this saved mock session.",
+  };
+}

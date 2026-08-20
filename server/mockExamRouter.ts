@@ -1,3 +1,4 @@
+import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { protectedProcedure, router } from "./_core/trpc";
 import { ensurePracticeCatalogue } from "./catalog";
@@ -6,6 +7,8 @@ import {
   PRACTICE_MOCK_QUESTION_COUNTS,
   expirePracticeMock,
   getActivePracticeMock,
+  getMockEntitlement,
+  getMockHistory,
   getPracticeMockResults,
   getPracticeMockSession,
   getPracticeMockSetup,
@@ -25,6 +28,15 @@ const startInput = z.object({
   includeAIGenerated: z.boolean().default(false),
 });
 
+export function assertCanStartPracticeMock(access: Awaited<ReturnType<typeof getMockEntitlement>>) {
+  if (!access.canStartMock) {
+    throw new TRPCError({
+      code: "FORBIDDEN",
+      message: access.reason ?? "Practice Mocks are included with Pro.",
+    });
+  }
+}
+
 export const mockExamRouter = router({
   setup: protectedProcedure.query(async () => {
     await ensurePracticeCatalogue();
@@ -32,11 +44,14 @@ export const mockExamRouter = router({
   }),
   start: protectedProcedure.input(startInput).mutation(async ({ ctx, input }) => {
     await ensurePracticeCatalogue();
+    assertCanStartPracticeMock(await getMockEntitlement(ctx.user.id));
     return startPracticeMock(ctx.user.id, input);
   }),
   session: protectedProcedure.input(mockIdInput).query(({ ctx, input }) => getPracticeMockSession(ctx.user.id, input.mockExamId)),
   results: protectedProcedure.input(mockIdInput).query(({ ctx, input }) => getPracticeMockResults(ctx.user.id, input.mockExamId)),
   active: protectedProcedure.query(({ ctx }) => getActivePracticeMock(ctx.user.id)),
+  entitlement: protectedProcedure.query(({ ctx }) => getMockEntitlement(ctx.user.id)),
+  history: protectedProcedure.query(({ ctx }) => getMockHistory(ctx.user.id)),
   saveAnswer: protectedProcedure
     .input(mockIdInput.extend({ questionId: z.number().int().positive(), selectedAnswer: z.string().min(1).max(8) }))
     .mutation(({ ctx, input }) => savePracticeMockAnswer(ctx.user.id, input)),

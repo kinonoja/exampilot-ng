@@ -1,4 +1,4 @@
-import { and, asc, desc, eq, inArray, sql } from "drizzle-orm";
+import { and, asc, desc, eq, inArray, isNull, sql } from "drizzle-orm";
 import {
   exams,
   mockExamQuestions,
@@ -8,12 +8,26 @@ import {
   topics,
   type QuestionOption,
 } from "../drizzle/schema";
-import { getDb } from "./db";
+import { getDb, getStudentProfile } from "./db";
+import { getPracticeMockEntitlement } from "./entitlements";
 
 export const PRACTICE_MOCK_QUESTION_COUNTS = [5, 10, 15] as const;
 export const PRACTICE_MOCK_DURATION_MINUTES = [5, 10, 15] as const;
 
 type MockStatus = "in_progress" | "submitted" | "expired";
+
+type HistoryCandidate = {
+  id: number;
+  status: MockStatus;
+  startedAt: Date;
+  durationSeconds: number;
+  submittedAt: Date | null;
+  score: number | null;
+  examId: number;
+  examName: string;
+  subjectIds: number[];
+  questionCount: number | string | null;
+};
 
 export function getMockLifecycle(
   status: MockStatus,
@@ -51,6 +65,34 @@ export function shouldResumePracticeMock(
   now = new Date(),
 ) {
   return getMockLifecycle(status, startedAt, durationSeconds, now).status === "in_progress";
+}
+
+export function getHistoryFinalizationIds(
+  rows: Array<Pick<HistoryCandidate, "id" | "status" | "startedAt" | "durationSeconds" | "score">>,
+  now = new Date(),
+) {
+  return rows
+    .filter(row => row.score === null && (
+      row.status === "expired" || getMockLifecycle(row.status, row.startedAt, row.durationSeconds, now).status === "expired"
+    ))
+    .map(row => row.id);
+}
+
+export function buildMockHistory(rows: Array<Omit<HistoryCandidate, "durationSeconds">>) {
+  return rows
+    .filter(row => (row.status === "submitted" || row.status === "expired") && row.score !== null)
+    .sort((first, second) => (second.submittedAt ?? second.startedAt).getTime() - (first.submittedAt ?? first.startedAt).getTime())
+    .map(row => ({
+      id: row.id,
+      examId: row.examId,
+      examName: row.examName,
+      subjectIds: row.subjectIds,
+      startedAt: row.startedAt,
+      submittedAt: row.submittedAt,
+      score: row.score,
+      status: row.status,
+      questionCount: Number(row.questionCount ?? 0),
+    }));
 }
 
 type ScoreableMockQuestion = {
@@ -162,6 +204,12 @@ export async function getPracticeMockSetup() {
   };
 }
 
+export async function getMockEntitlement(userId: number) {
+  const profile = await getStudentProfile(userId);
+  if (!profile) throw new Error("Your student profile could not be found.");
+  return getPracticeMockEntitlement(profile.subscriptionStatus);
+}
+
 export async function startPracticeMock(userId: number, input: StartPracticeMockInput) {
   const db = await getDb();
   if (!db) throw new Error("Practice Mock is currently unavailable.");
@@ -204,6 +252,14 @@ export async function startPracticeMock(userId: number, input: StartPracticeMock
     questionId: question.id,
     position: index + 1,
   })));
+  console.info("[Analytics] practice_mock_started", {
+    userId,
+    mockExamId,
+    examId: input.examId,
+    subjectIds: uniqueSubjectIds,
+    questionCount: selectedQuestions.length,
+    durationSeconds: input.durationMinutes * 60,
+  });
   return getPracticeMockSession(userId, mockExamId);
 }
 
@@ -278,15 +334,69 @@ async function finalizePracticeMock(userId: number, mockExamId: number, requeste
     .innerJoin(questions, eq(mockExamQuestions.questionId, questions.id))
     .where(eq(mockExamQuestions.mockExamId, mockExamId));
   const scoreSummary = getMockScore(rows);
-  await Promise.all(rows.map(row => db
-    .update(mockExamQuestions)
-    .set({ isCorrect: row.selectedAnswer === row.correctAnswer })
-    .where(eq(mockExamQuestions.id, row.id))));
-  await db
-    .update(mockExams)
-    .set({ status, submittedAt, score: scoreSummary.score })
-    .where(and(eq(mockExams.id, mockExamId), eq(mockExams.userId, userId)));
+  if (header.score === null) {
+    await Promise.all(rows.map(row => db
+      .update(mockExamQuestions)
+      .set({ isCorrect: row.selectedAnswer === row.correctAnswer })
+      .where(eq(mockExamQuestions.id, row.id))));
+    const updateResult = await db
+      .update(mockExams)
+      .set({ status, submittedAt, score: scoreSummary.score })
+      .where(and(eq(mockExams.id, mockExamId), eq(mockExams.userId, userId), isNull(mockExams.score)));
+    if (Number(updateResult[0]?.affectedRows ?? 0) > 0) {
+      console.info("[Analytics] practice_mock_completed", {
+        userId,
+        mockExamId,
+        status,
+        score: scoreSummary.score,
+        correct: scoreSummary.correct,
+        total: scoreSummary.total,
+      });
+    }
+  }
   return { status, submittedAt, ...scoreSummary };
+}
+
+export async function getMockHistory(userId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Practice Mock history is currently unavailable.");
+  const possibleExpiredRows = await db
+    .select({ id: mockExams.id, status: mockExams.status, startedAt: mockExams.startedAt, durationSeconds: mockExams.durationSeconds, score: mockExams.score })
+    .from(mockExams)
+    .where(and(eq(mockExams.userId, userId), inArray(mockExams.status, ["in_progress", "expired"])))
+    .orderBy(desc(mockExams.startedAt));
+  const finalizationIds = getHistoryFinalizationIds(possibleExpiredRows);
+  for (const mockExamId of finalizationIds) {
+    await expirePracticeMock(userId, mockExamId);
+  }
+  const rows = await db
+    .select({
+      id: mockExams.id,
+      examId: mockExams.examId,
+      examName: exams.name,
+      subjectIds: mockExams.subjectIds,
+      startedAt: mockExams.startedAt,
+      submittedAt: mockExams.submittedAt,
+      score: mockExams.score,
+      status: mockExams.status,
+      questionCount: sql<number>`COUNT(${mockExamQuestions.id})`,
+    })
+    .from(mockExams)
+    .innerJoin(exams, eq(mockExams.examId, exams.id))
+    .leftJoin(mockExamQuestions, eq(mockExamQuestions.mockExamId, mockExams.id))
+    .where(and(eq(mockExams.userId, userId), inArray(mockExams.status, ["submitted", "expired"])))
+    .groupBy(
+      mockExams.id,
+      mockExams.examId,
+      exams.name,
+      mockExams.subjectIds,
+      mockExams.startedAt,
+      mockExams.submittedAt,
+      mockExams.score,
+      mockExams.status,
+    )
+    .orderBy(desc(mockExams.submittedAt), desc(mockExams.startedAt));
+  return buildMockHistory(rows);
 }
 
 export async function getPracticeMockResults(userId: number, mockExamId: number) {

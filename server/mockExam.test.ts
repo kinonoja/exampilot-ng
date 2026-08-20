@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { getMockLifecycle, getMockPace, getMockProgress, getMockScore, getMockTopicBreakdown, getRestoredQuestionPosition, shouldResumePracticeMock } from "./mockExam";
+import { buildMockHistory, getHistoryFinalizationIds, getMockLifecycle, getMockPace, getMockProgress, getMockScore, getMockTopicBreakdown, getRestoredQuestionPosition, shouldResumePracticeMock } from "./mockExam";
 
 describe("Practice Mock lifecycle", () => {
   it("expires an in-progress session at its server-calculated deadline", () => {
@@ -72,5 +72,22 @@ describe("Practice Mock lifecycle", () => {
       durationSeconds: 600,
       questionCount: 10,
     })).toEqual({ elapsedSeconds: 240, plannedSecondsPerQuestion: 60, actualSecondsPerQuestion: 24, paceStatus: "within_pace" });
+  });
+
+  it("finalizes expired unscored mocks and returns only completed history in newest-first order", () => {
+    const now = new Date("2026-08-20T12:00:00.000Z");
+    expect(getHistoryFinalizationIds([
+      { id: 1, status: "in_progress", startedAt: new Date("2026-08-20T11:40:00.000Z"), durationSeconds: 300, score: null },
+      { id: 2, status: "expired", startedAt: new Date("2026-08-20T11:50:00.000Z"), durationSeconds: 300, score: null },
+      { id: 3, status: "submitted", startedAt: new Date("2026-08-20T11:55:00.000Z"), durationSeconds: 300, score: 80 },
+    ], now)).toEqual([1, 2]);
+    const history = buildMockHistory([
+      { id: 1, examId: 1, examName: "JAMB", subjectIds: [1], startedAt: new Date("2026-08-20T10:00:00.000Z"), submittedAt: new Date("2026-08-20T10:05:00.000Z"), durationSeconds: 300, score: 60, status: "expired", questionCount: "5" },
+      { id: 2, examId: 1, examName: "JAMB", subjectIds: [1, 2], startedAt: new Date("2026-08-20T11:00:00.000Z"), submittedAt: new Date("2026-08-20T11:05:00.000Z"), durationSeconds: 300, score: 80, status: "submitted", questionCount: 10 },
+      { id: 3, examId: 1, examName: "JAMB", subjectIds: [1], startedAt: new Date("2026-08-20T11:30:00.000Z"), submittedAt: null, durationSeconds: 300, score: null, status: "in_progress", questionCount: 5 },
+      { id: 4, examId: 1, examName: "JAMB", subjectIds: [1], startedAt: new Date("2026-08-20T11:40:00.000Z"), submittedAt: new Date("2026-08-20T11:45:00.000Z"), durationSeconds: 300, score: null, status: "expired", questionCount: 5 },
+    ]);
+    expect(history.map(mock => mock.id)).toEqual([2, 1]);
+    expect(history[0]?.questionCount).toBe(10);
   });
 });

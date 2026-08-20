@@ -23,3 +23,9 @@ The full project suite completed with **39 passing tests across 14 test files**,
 ## Automatic-completion review and persistence
 
 The timed session `120001` was confirmed in the database as `status = expired`, `score = 10`, with **1 correct** and **9 incorrect** `isCorrect` values persisted across its ten mock-question rows. Its automatically completed results screen rendered the same 10% result and opened Question 1’s flagged review, showing **C. 2 and -4** as both the student and correct answer, plus the existing explanation. Its **Explain with Tutor** action navigated to `/tutor?questionId=12`, confirming the Tutor question-context route also works for an automatically completed mock.
+
+## Requested double verification
+
+First, a fresh database check of manual session `150001` confirmed `status = submitted`, `score = 10`, `totalQuestions = 10`, `correctAnswers = 1`, and nine false `isCorrect` values. Second, reopening its results route independently rendered the same 10% score, 1 correct answer, 43-second pace summary, visible +0 prior-mock comparison, and topic bars. These checks confirm the stored scoring data and the student-facing results render agree.
+
+For the repeated review check, opening Question 1 from the freshly reloaded results rendered **B. 1/2** as both the student and correct answer, the stored trigonometric explanation, and the existing **Explain with Tutor** action. The results display and detailed review therefore both match the persistence check.
