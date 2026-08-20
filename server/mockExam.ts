@@ -1,4 +1,4 @@
-import { and, asc, eq, inArray, sql } from "drizzle-orm";
+import { and, asc, desc, eq, inArray, sql } from "drizzle-orm";
 import {
   exams,
   mockExamQuestions,
@@ -39,6 +39,20 @@ export function getMockProgress(
   return { answered, flagged, unanswered: rows.length - answered, total: rows.length };
 }
 
+export function getRestoredQuestionPosition(position: number, questionCount: number) {
+  if (questionCount <= 0) return 1;
+  return Math.max(1, Math.min(position, questionCount));
+}
+
+export function shouldResumePracticeMock(
+  status: MockStatus,
+  startedAt: Date,
+  durationSeconds: number,
+  now = new Date(),
+) {
+  return getMockLifecycle(status, startedAt, durationSeconds, now).status === "in_progress";
+}
+
 type StartPracticeMockInput = {
   examId: number;
   subjectIds: number[];
@@ -59,6 +73,7 @@ async function getOwnedMockHeader(userId: number, mockExamId: number) {
       startedAt: mockExams.startedAt,
       submittedAt: mockExams.submittedAt,
       durationSeconds: mockExams.durationSeconds,
+      currentQuestionPosition: mockExams.currentQuestionPosition,
       status: mockExams.status,
     })
     .from(mockExams)
@@ -111,6 +126,8 @@ export async function getPracticeMockSetup() {
 export async function startPracticeMock(userId: number, input: StartPracticeMockInput) {
   const db = await getDb();
   if (!db) throw new Error("Practice Mock is currently unavailable.");
+  const activeSession = await getActivePracticeMock(userId);
+  if (activeSession) return activeSession;
   const uniqueSubjectIds = input.subjectIds.filter((subjectId, index, all) => all.indexOf(subjectId) === index);
   const examRows = await db.select({ id: exams.id, name: exams.name }).from(exams).where(eq(exams.id, input.examId)).limit(1);
   if (examRows[0]?.name !== "JAMB") throw new Error("Practice Mock is currently available for the existing JAMB bank only.");
@@ -139,6 +156,7 @@ export async function startPracticeMock(userId: number, input: StartPracticeMock
     subjectIds: uniqueSubjectIds,
     startedAt,
     durationSeconds: input.durationMinutes * 60,
+    currentQuestionPosition: 1,
     status: "in_progress",
   });
   const mockExamId = Number(result[0].insertId);
@@ -148,6 +166,22 @@ export async function startPracticeMock(userId: number, input: StartPracticeMock
     position: index + 1,
   })));
   return getPracticeMockSession(userId, mockExamId);
+}
+
+export async function getActivePracticeMock(userId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Practice Mock is currently unavailable.");
+  const rows = await db
+    .select({ id: mockExams.id })
+    .from(mockExams)
+    .where(and(eq(mockExams.userId, userId), eq(mockExams.status, "in_progress")))
+    .orderBy(desc(mockExams.startedAt))
+    .limit(1);
+  const activeMockId = rows[0]?.id;
+  if (!activeMockId) return null;
+  const header = await getResolvedMockHeader(userId, activeMockId);
+  if (!header || !shouldResumePracticeMock(header.status, header.startedAt, header.durationSeconds)) return null;
+  return getPracticeMockSession(userId, activeMockId);
 }
 
 export async function getPracticeMockSession(userId: number, mockExamId: number) {
@@ -176,6 +210,7 @@ export async function getPracticeMockSession(userId: number, mockExamId: number)
     .orderBy(asc(mockExamQuestions.position));
   const lifecycle = getMockLifecycle(header.status, header.startedAt, header.durationSeconds);
   const sessionRows = rows.map(row => ({ ...row, options: row.options as QuestionOption[] }));
+  const currentQuestionPosition = getRestoredQuestionPosition(header.currentQuestionPosition, sessionRows.length);
   return {
     id: header.id,
     examId: header.examId,
@@ -183,6 +218,7 @@ export async function getPracticeMockSession(userId: number, mockExamId: number)
     startedAt: header.startedAt,
     submittedAt: header.submittedAt,
     durationSeconds: header.durationSeconds,
+    currentQuestionPosition,
     status: lifecycle.status,
     remainingSeconds: lifecycle.remainingSeconds,
     questions: sessionRows,
@@ -225,6 +261,23 @@ export async function setPracticeMockFlag(userId: number, input: { mockExamId: n
     .where(and(eq(mockExamQuestions.mockExamId, input.mockExamId), eq(mockExamQuestions.questionId, input.questionId)));
   if (Number(result[0]?.affectedRows ?? 0) === 0) throw new Error("That question is not part of this Practice Mock.");
   return { saved: true };
+}
+
+export async function setPracticeMockPosition(userId: number, input: { mockExamId: number; position: number }) {
+  await requireEditableMock(userId, input.mockExamId);
+  const db = await getDb();
+  if (!db) throw new Error("Your Practice Mock position could not be saved at this time.");
+  const rows = await db
+    .select({ position: mockExamQuestions.position })
+    .from(mockExamQuestions)
+    .where(and(eq(mockExamQuestions.mockExamId, input.mockExamId), eq(mockExamQuestions.position, input.position)))
+    .limit(1);
+  if (!rows[0]) throw new Error("That question position is not part of this Practice Mock.");
+  await db
+    .update(mockExams)
+    .set({ currentQuestionPosition: input.position })
+    .where(and(eq(mockExams.id, input.mockExamId), eq(mockExams.userId, userId)));
+  return { saved: true, position: input.position };
 }
 
 export async function submitPracticeMock(userId: number, mockExamId: number) {

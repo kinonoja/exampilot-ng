@@ -5,10 +5,12 @@ import {
   PRACTICE_MOCK_DURATION_MINUTES,
   PRACTICE_MOCK_QUESTION_COUNTS,
   expirePracticeMock,
+  getActivePracticeMock,
   getPracticeMockSession,
   getPracticeMockSetup,
   savePracticeMockAnswer,
   setPracticeMockFlag,
+  setPracticeMockPosition,
   startPracticeMock,
   submitPracticeMock,
 } from "./mockExam";
@@ -32,12 +34,16 @@ export const mockExamRouter = router({
     return startPracticeMock(ctx.user.id, input);
   }),
   session: protectedProcedure.input(mockIdInput).query(({ ctx, input }) => getPracticeMockSession(ctx.user.id, input.mockExamId)),
+  active: protectedProcedure.query(({ ctx }) => getActivePracticeMock(ctx.user.id)),
   saveAnswer: protectedProcedure
     .input(mockIdInput.extend({ questionId: z.number().int().positive(), selectedAnswer: z.string().min(1).max(8) }))
     .mutation(({ ctx, input }) => savePracticeMockAnswer(ctx.user.id, input)),
   setFlag: protectedProcedure
     .input(mockIdInput.extend({ questionId: z.number().int().positive(), flagged: z.boolean() }))
     .mutation(({ ctx, input }) => setPracticeMockFlag(ctx.user.id, input)),
+  setPosition: protectedProcedure
+    .input(mockIdInput.extend({ position: z.number().int().positive().max(15) }))
+    .mutation(({ ctx, input }) => setPracticeMockPosition(ctx.user.id, input)),
   submit: protectedProcedure.input(mockIdInput).mutation(({ ctx, input }) => submitPracticeMock(ctx.user.id, input.mockExamId)),
   expire: protectedProcedure.input(mockIdInput).mutation(({ ctx, input }) => expirePracticeMock(ctx.user.id, input.mockExamId)),
 });

@@ -55,3 +55,14 @@
 - [x] Verify answer persistence, question navigation, timer expiry, and manual submission before moving to Phase 4 Sub-step 4b
 - [x] Clamp the visible Practice Mock countdown to its configured duration and verify it never begins above the limit
 - [x] Complete and document live previous/next, direct navigator-jump, and manual-submit lock verification
+- [x] Document the limited in-browser reload test previously performed and reproduce true close-and-reopen recovery with answered and flagged questions
+- [x] Add active Practice Mock discovery and resume behaviour so reopening the mock route recovers the student’s in-progress session
+- [x] Add regression coverage and step-by-step verification evidence for answer, flag, timer, and active-question recovery after tab closure
+- [x] Fix and verify the post-restart last-question recovery regression so reopening never overwrites a saved position with question one
+- [x] Add focused recovery regression coverage for active-session discovery, saved answers, review flags, restored question position, and continued countdown state
+- [x] Repeat and document the close-and-reopen recovery test after a clean server restart with explicit before-and-after session state
+- [x] Add an automated active-session route recovery regression covering no-session route selection and resumed saved state
+- [x] Capture and document a fully rendered post-restart recovery screen together with matching persisted session state before checkpointing
+- [x] Create and capture one final post-restart recovery session showing the rendered resumed question, saved answer, review flag, and continuing timer alongside its matching database state
+- [x] Capture explicit post-restart evidence that the saved answer option remains selected and tie it to the persisted question-level answer and flag row
+- [x] Make the selected option state explicit in the rendered Practice Mock UI and capture it after post-restart recovery with matching question-level data

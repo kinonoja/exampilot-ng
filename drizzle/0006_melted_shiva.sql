@@ -1,0 +1,1 @@
+ALTER TABLE `mock_exams` ADD `currentQuestionPosition` int DEFAULT 1 NOT NULL;

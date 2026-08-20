@@ -21,3 +21,9 @@ This release is a **short Practice Mock**, clearly separate from the future full
 ## JAMB safeguard
 
 The future JAMB full-mock preset remains unavailable until the question bank contains four valid JAMB subjects and the complete allocation of 60 English questions plus 40 questions for each other subject. The Practice Mock does not simulate or claim the official JAMB format.
+
+## Close-and-reopen recovery correction
+
+An unfinished Practice Mock is recovered from the authenticated user’s server-side data, not from the former tab URL or browser storage. The mock header records `currentQuestionPosition` alongside its existing start time, duration, answers, and flags. Every next, previous, or direct navigator action persists that position immediately.
+
+When a student opens `/mock-exam` without a session query parameter, the application asks the server for their most recent **live** mock. The server resolves elapsed sessions to `expired` first; it returns only an in-progress session. The client then routes the student to that session and restores the saved answer, review flag, non-resetting timer, and last question position. Starting a new mock while one is live resumes the existing mock rather than creating a competing session.

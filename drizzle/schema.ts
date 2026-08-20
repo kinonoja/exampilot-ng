@@ -144,6 +144,7 @@ export const mockExams = mysqlTable(
     startedAt: timestamp("startedAt").defaultNow().notNull(),
     submittedAt: timestamp("submittedAt"),
     durationSeconds: int("durationSeconds").notNull(),
+    currentQuestionPosition: int("currentQuestionPosition").default(1).notNull(),
     score: int("score"),
     status: mysqlEnum("status", mockExamStatusValues).default("in_progress").notNull(),
   },
