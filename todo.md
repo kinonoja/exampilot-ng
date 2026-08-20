@@ -113,7 +113,7 @@
 - [x] Prepare a balanced 40–50-question topic plan for each subject before generating questions
 - [x] Draft five original, quality-checked Chemistry review questions in the existing question-bank format without persisting them
 - [x] Draft five original, quality-checked Physics review questions in the existing question-bank format without persisting them
-- [ ] Present the topic plan and ten-question review sample for approval before generating or saving any full batch
+- [x] Present the topic plan and ten-question review sample for approval before generating or saving any full batch
 - [x] Research and document only official, freely accessible WAEC syllabus, format, marking-structure, and sample-question material
 - [x] Research and document only official, freely accessible NECO syllabus, format, marking-structure, and sample-question material
 - [x] Explicitly exclude third-party sites claiming to provide free WAEC or NECO past questions from all content research and generation
