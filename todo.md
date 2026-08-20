@@ -114,6 +114,51 @@
 - [x] Draft five original, quality-checked Chemistry review questions in the existing question-bank format without persisting them
 - [x] Draft five original, quality-checked Physics review questions in the existing question-bank format without persisting them
 - [x] Present the topic plan and ten-question review sample for approval before generating or saving any full batch
+- [ ] Generate 48 original JAMB Chemistry questions through the approved LLM path with truthful `isAIGenerated: true` provenance
+- [ ] Generate 48 original JAMB Physics questions through the approved LLM path with truthful `isAIGenerated: true` provenance
+- [ ] Validate every generated record for schema integrity, option quality, explanation quality, topical coverage, and independently recomputed numerical results from question content
+- [ ] Enforce a reasonably balanced A/B/C/D correct-answer distribution for each subject batch
+- [ ] Persist only the truthfully LLM-generated and fully independently validated Chemistry and Physics batches to the existing JAMB question bank
+- [ ] Add automated coverage and verify Chemistry/Physics availability in practice and Practice Mock subject selection
+- [ ] Report the persisted topic, difficulty, and answer-letter distributions before final spot-check
+- [x] Confirm whether the approved content-generation service is available for review-only WAEC samples; hold samples if the same exhausted service blocks them
+- [x] Refine an official-source-bounded topic plan for WAEC General Mathematics, Chemistry, and Physics
+- [ ] Create five original review-only WAEC samples per approved subject only if truthful AI-generation provenance can be established
+- [ ] Present the WAEC topic plan and samples for approval before generating or persisting any WAEC batch
+- [ ] Keep the JAMB Chemistry and Physics full-batch expansion paused until approved LLM capacity is available, then regenerate before any persistence
+- [x] Confirm the restored LLM generation path with a small structured JAMB batch probe before any full request (the service remains usage-exhausted)
+- [ ] Present the complete JAMB Chemistry/Physics validation and distribution summary for final spot-check before persistence
+- [x] Review the user-authorized Claude-authored Chemistry stopgap batch for correctness, explanations, answer distribution, JAMB-plan fit, and bank overlap without persistence
+- [x] Report review-only findings for the first user-provided Chemistry batch before accepting later stopgap batches
+- [x] Apply the user-approved revised explanation for held Chemistry Question 5 without persisting it
+- [x] Review the forthcoming user-provided Chemistry gap-coverage batch for correctness, balance, coverage, and overlap without persistence
+- [x] Review the user-provided Chemistry Batch 3 for correctness, explanation quality, coverage gaps, and overlap without persistence
+- [x] Report the running answer-letter distribution across all validated held Chemistry batches without persistence
+- [x] Apply and revalidate the user-approved held Chemistry Batch 3 precision revisions without persistence
+- [x] Review the final Chemistry Batch 4 against the remaining answer-key target of A:7, B:5, C:5, D:7 without persistence
+- [x] Validate the user-provided final Chemistry Batch 4 for correctness, explanations, coverage completion, overlap, and exact combined distribution without persistence
+- [x] Apply and revalidate the two required Batch 4 wording revisions without persistence
+- [x] Obtain and review the missing Chemistry Batch 2 (questions 13–24) with the exact remaining answer-key target and coverage reconciliation
+- [x] Report final Chemistry review-only findings and request any necessary corrections before discussing persistence
+- [x] Apply the user-approved Batch 4 greenhouse-gas and acid-rain wording revisions without persistence
+- [x] Review the supplied user-authorized Chemistry Batch 2 for correctness, coverage, overlap, and exact 48-question combined distribution without persistence
+- [x] Revalidate the user-designated authoritative Chemistry Batch 2 against all held batches without persistence
+- [x] Recompute and report the authoritative 48-question Chemistry distribution and all-record quality result before any persistence decision
+- [x] Revalidate the user-designated authoritative Chemistry Batch 2 against all held batches without persistence
+- [x] Recompute and report the authoritative 48-question Chemistry distribution and all-record quality result before any persistence decision
+- [x] Replace the duplicate-reaction Batch 2 Question 9 with a non-overlapping D-key redox/electrolysis/corrosion question and revalidate it
+- [x] Apply the Batch 2 iron-extraction explanation refinement without persistence
+- [x] Obtain the user’s decision on accepting or restoring the documented topic-allocation and difficulty-calibration adjustments before persistence
+- [x] Apply and revalidate the user-approved D-key molten-lead-bromide replacement for Batch 2 Question 9 without persistence
+- [x] Apply and revalidate the user-approved Batch 2 iron-extraction explanation refinement without persistence
+- [x] Run and report the final 48-question Chemistry review-only gate before any persistence decision
+- [x] Transactionally persist the user-approved final 48-question Chemistry collection to the JAMB bank with `isAIGenerated: true`
+- [x] Verify persisted Chemistry subject, topics, question count, provenance, answer balance, difficulty mix, and no duplicate records in the database
+- [x] Verify Chemistry appears in practice filters and Practice Mock subject selection with usable question availability
+- [x] Run focused and full automated tests plus TypeScript validation after Chemistry persistence
+- [x] Deliver step-by-step Chemistry persistence and verification evidence before checkpointing
+- [x] Replace the stale Practice Mock copy that names only Biology, English, and Mathematics after Chemistry availability is verified
+- [x] Send the requested step-by-step Chemistry persistence and verification report before checkpointing
 - [x] Research and document only official, freely accessible WAEC syllabus, format, marking-structure, and sample-question material
 - [x] Research and document only official, freely accessible NECO syllabus, format, marking-structure, and sample-question material
 - [x] Explicitly exclude third-party sites claiming to provide free WAEC or NECO past questions from all content research and generation

@@ -47,6 +47,10 @@ When WAEC original practice is eventually approved, its metadata and interface s
 
 For NECO, the product should show **“NECO preparation coverage coming after official syllabus verification”** rather than presenting an imitation exam or inferred question mix.
 
+## Current content-generation gate
+
+The configured server-side LLM path used for structured question generation returned a usage-exhausted response during the approved JAMB Chemistry/Physics run. The planned WAEC review samples would use that same service. Consequently, **no WAEC sample is being drafted, labelled as AI-generated, or saved until this capacity is restored**. The official-source research and topic-plan work can continue independently of this gate.
+
 ## References
 
 [1] [WAEC Nigeria FAQ](https://www.waecnigeria.org/faq)

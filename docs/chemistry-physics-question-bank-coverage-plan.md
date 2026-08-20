@@ -22,7 +22,7 @@ JAMB’s official IBASS E-syllabus catalogue currently exposes Chemistry and Phy
 | Metals and their compounds | 4 | extraction, alloys, qualitative tests, reactivity | 1 easy / 2 medium / 1 hard |
 | Organic chemistry | 5 | homologous series, nomenclature, reactions, petroleum | 1 easy / 3 medium / 1 hard |
 | Chemistry and industry | 4 | fertilizer, cement, glass, petroleum/industrial processes | 1 easy / 2 medium / 1 hard |
-| **Total** | **48** |  | **14 easy / 26 medium / 8 hard** |
+| **Total** | **48** |  | **14 easy / 25 medium / 9 hard** |
 
 ## Physics: proposed 48-question balance
 
@@ -40,11 +40,13 @@ JAMB’s official IBASS E-syllabus catalogue currently exposes Chemistry and Phy
 | Electrostatics and current electricity | 3 | charge, potential difference, resistance, circuits | 1 easy / 1 medium / 1 hard |
 | Magnetism, electromagnetic induction, and alternating current | 3 | fields, motor/generator, transformer principles | 1 easy / 2 medium |
 | Atomic, nuclear, and basic electronics | 2 | radioactivity, semiconductor/electronic devices | 1 easy / 1 medium |
-| **Total** | **48** |  | **14 easy / 27 medium / 7 hard** |
+| **Total** | **48** |  | **14 easy / 26 medium / 8 hard** |
 
 ## Quality gates for the later full batch
 
 The later generation pass will reject any question that is a copied past question, has fewer or more than four choices, lacks one unambiguous key, uses an unsupported formula or unit, contains a calculation with no stated assumptions, or has an explanation that does not demonstrate why the keyed option is correct. Calculations will be independently recomputed, and every Chemistry/Physics topic will be matched to the plan above before database insertion.
+
+> **Arithmetic clarification before generation:** the original bold total cells contained a one-question addition error in each subject. The per-topic difficulty allocations above are unchanged and sum to the corrected totals: Chemistry **14 easy / 25 medium / 9 hard** and Physics **14 easy / 26 medium / 8 hard**. This is a documentation arithmetic correction only; it does not change the reviewed topic allocation or the intended calibration.
 
 ## References
 
