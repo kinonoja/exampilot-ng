@@ -1,0 +1,2 @@
+ALTER TABLE `mock_exam_questions` ADD `position` int NOT NULL;--> statement-breakpoint
+ALTER TABLE `mock_exam_questions` ADD CONSTRAINT `mock_exam_question_position_unique` UNIQUE(`mockExamId`,`position`);

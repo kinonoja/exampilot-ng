@@ -10,12 +10,14 @@ import PremiumDashboard from "./pages/PremiumDashboard";
 import PremiumHome from "./pages/PremiumHome";
 import PremiumPractice from "./pages/PremiumPractice";
 import PremiumTutor from "./pages/PremiumTutor";
+import PremiumMockExam from "./pages/PremiumMockExam";
 import { MasteryRailMini } from "./components/MasteryRailMini";
 
 const StudentDashboard = () => <DashboardLayout><MasteryRailMini current="focus" /><PremiumDashboard /></DashboardLayout>;
 const StudentPractice = () => <DashboardLayout><MasteryRailMini current="practice" /><PremiumPractice /></DashboardLayout>;
 const StudentBilling = () => <DashboardLayout><MasteryRailMini current="ready" /><PremiumBilling /></DashboardLayout>;
 const StudentTutor = () => <DashboardLayout><MasteryRailMini current="understand" /><PremiumTutor /></DashboardLayout>;
+const StudentMockExam = () => <DashboardLayout><MasteryRailMini current="practice" /><PremiumMockExam /></DashboardLayout>;
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -25,6 +27,7 @@ function Router() {
       <Route path={"/dashboard"} component={StudentDashboard} />
       <Route path={"/practice"} component={StudentPractice} />
       <Route path={"/tutor"} component={StudentTutor} />
+      <Route path={"/mock-exam"} component={StudentMockExam} />
       <Route path={"/billing"} component={StudentBilling} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}

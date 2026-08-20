@@ -17,6 +17,7 @@ import { cancelProSubscription, initializeProCheckout, verifyAndGrantProAccess }
 import { getPracticeEntitlement } from "./entitlements";
 import { sendTutorMessage, startTutorConversation } from "./tutor";
 import { generateTopicPracticeQuestions } from "./practiceGeneration";
+import { mockExamRouter } from "./mockExamRouter";
 
 const profileInput = z.object({
   examTarget: z.enum(["JAMB", "WAEC", "NECO", "NABTEB"]),
@@ -100,6 +101,7 @@ export const appRouter = router({
       .input(z.object({ topicId: z.number().int().positive(), count: z.number().int().min(3).max(5).default(3) }))
       .mutation((opts) => generateTopicPracticeQuestions(opts.input)),
   }),
+  mock: mockExamRouter,
   billing: router({
     overview: protectedProcedure.query(({ ctx }) => getBillingOverview(ctx.user.id)),
     initializeProCheckout: protectedProcedure.mutation(({ ctx }) => initializeProCheckout(ctx.user.id)),

@@ -48,3 +48,10 @@
 - [x] Normalize supported Claude difficulty labels before generated-question validation
 - [x] Handle concise Claude question and explanation fields without weakening generated-question quality safeguards
 - [x] Fix the generated-topic practice handoff so the linked route preselects its exam, subject, and topic filters
+- [x] Review and implement Phase 4 Sub-step 4a only: timed session setup, live timer, and persisted student answers
+- [x] Build an explicitly labelled short Practice Mock from the existing 53-question JAMB bank, without presenting it as the future 180-question full JAMB mock
+- [x] Add stable mock-question ordering plus protected Practice Mock start, resume, save-answer, flag, and completion procedures
+- [x] Build the Practice Mock setup and live timed-session screens using the established student design system
+- [x] Verify answer persistence, question navigation, timer expiry, and manual submission before moving to Phase 4 Sub-step 4b
+- [x] Clamp the visible Practice Mock countdown to its configured duration and verify it never begins above the limit
+- [x] Complete and document live previous/next, direct navigator-jump, and manual-submit lock verification

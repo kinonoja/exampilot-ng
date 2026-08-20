@@ -160,12 +160,14 @@ export const mockExamQuestions = mysqlTable(
     questionId: int("questionId")
       .notNull()
       .references(() => questions.id, { onDelete: "cascade" }),
+    position: int("position").notNull(),
     selectedAnswer: varchar("selectedAnswer", { length: 8 }),
     isCorrect: boolean("isCorrect"),
     flagged: boolean("flagged").default(false).notNull(),
   },
   table => [
     uniqueIndex("mock_exam_question_unique").on(table.mockExamId, table.questionId),
+    uniqueIndex("mock_exam_question_position_unique").on(table.mockExamId, table.position),
     index("mock_exam_questions_mock_idx").on(table.mockExamId),
   ],
 );
