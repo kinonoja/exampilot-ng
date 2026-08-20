@@ -92,3 +92,20 @@
 - [x] Confirm the billing overview refetches current entitlement when reached from the Free mock upgrade CTA
 - [x] Suppress stale cached billing entitlement while a fresh route-entry overview is loading
 - [x] Add focused coverage for the billing overview loading guard after tier changes
+- [x] Keep the 46-course Stage 1 dataset internal-only and disconnected from all student-facing flows
+- [x] Locate a current official JAMB brochure, downloadable document, or IBASS course-detail source for direct validation
+- [x] Compare each 46-course draft combination against accessible official JAMB evidence and flag disagreements
+- [x] Classify every course by confidence and document where institution-specific verification remains necessary
+- [x] Specify honest student-facing wording for any later course record with institution-dependent requirements
+- [x] Correct the internal course dataset for the approved IBASS disagreement register and preserve its internal-only status
+- [x] Add course preference and optional target-institution fields without deriving a subject default from course alone
+- [x] Build searchable course and target-institution onboarding with a valid “not sure yet” option and later editing access
+- [x] Show the permanent “Common combination — confirm for your university” framing and JAMB IBASS Eligibility Checker link for every course
+- [x] Visually flag the eight unvalidated courses without hiding them from selection
+- [x] Promote an institution-specific subject default only after both course and institution are known and validated
+- [x] Keep existing Practice Mock, Tutor, and Paystack internal logic unchanged while adding contextual course guidance
+- [x] Add automated coverage for the verified, not-sure, and unvalidated course-selection paths
+- [x] Verify first-login onboarding, later profile editing, permanent verification copy, and no premature subject default in the browser
+- [x] Define and test the future verified-institution guard without manufacturing an unvalidated subject default
+- [x] Save, reopen, edit, and restore a course-direction profile in the browser while confirming subjectDefault remains null
+- [x] Exercise a persisted verified institution state through the protected course-direction read procedure without granting a default

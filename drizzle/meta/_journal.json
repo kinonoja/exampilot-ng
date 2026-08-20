@@ -50,6 +50,13 @@
       "when": 1787185989690,
       "tag": "0006_melted_shiva",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "5",
+      "when": 1787193325204,
+      "tag": "0007_melted_the_anarchist",
+      "breakpoints": true
     }
   ]
 }

@@ -90,6 +90,11 @@ export async function getStudentProfile(userId: number) {
       email: users.email,
       examTarget: users.examTarget,
       examYear: users.examYear,
+      courseKey: users.courseKey,
+      targetInstitutionName: users.targetInstitutionName,
+      institutionPlanningStatus: users.institutionPlanningStatus,
+      institutionValidationStatus: users.institutionValidationStatus,
+      coursePreferenceUpdatedAt: users.coursePreferenceUpdatedAt,
       subscriptionStatus: users.subscriptionStatus,
       subscriptionExpiresAt: users.subscriptionExpiresAt,
     })
@@ -106,6 +111,27 @@ export async function updateStudentProfile(
   const db = await getDb();
   if (!db) throw new Error("The student profile is currently unavailable.");
   await db.update(users).set(profile).where(eq(users.id, userId));
+  return getStudentProfile(userId);
+}
+
+export async function updateStudentCoursePreference(
+  userId: number,
+  preference: {
+    courseKey: string;
+    targetInstitutionName: string | null;
+    institutionPlanningStatus: "not_sure" | "provided";
+  },
+) {
+  const db = await getDb();
+  if (!db) throw new Error("Your course direction is currently unavailable.");
+  await db
+    .update(users)
+    .set({
+      ...preference,
+      institutionValidationStatus: "not_checked",
+      coursePreferenceUpdatedAt: new Date(),
+    })
+    .where(eq(users.id, userId));
   return getStudentProfile(userId);
 }
 

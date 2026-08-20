@@ -7,6 +7,7 @@ import {
   getRandomPracticeQuestion,
   getStudentProfile,
   submitPracticeAttempt,
+  updateStudentCoursePreference,
   updateStudentProfile,
 } from "./db";
 import { COOKIE_NAME } from "@shared/const";
@@ -18,11 +19,24 @@ import { getPracticeEntitlement } from "./entitlements";
 import { sendTutorMessage, startTutorConversation } from "./tutor";
 import { generateTopicPracticeQuestions } from "./practiceGeneration";
 import { mockExamRouter } from "./mockExamRouter";
+import { COURSE_VERIFICATION_COPY, COURSE_VERIFICATION_DETAIL, JAMB_IBASS_ELIGIBILITY_URL, getInternalCourse, internalCourseCatalogue } from "./courseCatalogue";
 
 const profileInput = z.object({
   examTarget: z.enum(["JAMB", "WAEC", "NECO", "NABTEB"]),
   examYear: z.number().int().min(2026).max(2035),
 });
+
+const coursePreferenceInput = z.discriminatedUnion("institutionPlanningStatus", [
+  z.object({
+    courseKey: z.string().min(1).max(128),
+    institutionPlanningStatus: z.literal("not_sure"),
+  }),
+  z.object({
+    courseKey: z.string().min(1).max(128),
+    institutionPlanningStatus: z.literal("provided"),
+    targetInstitutionName: z.string().trim().min(2).max(255),
+  }),
+]);
 
 async function getPracticeAccess(userId: number) {
   const [profile, dailyAttemptCount] = await Promise.all([
@@ -50,6 +64,39 @@ export const appRouter = router({
   profile: router({
     get: protectedProcedure.query(({ ctx }) => getStudentProfile(ctx.user.id)),
     save: protectedProcedure.input(profileInput).mutation(({ ctx, input }) => updateStudentProfile(ctx.user.id, input)),
+  }),
+  courseDirection: router({
+    catalogue: protectedProcedure.query(() => ({
+      courses: internalCourseCatalogue,
+      verificationCopy: COURSE_VERIFICATION_COPY,
+      verificationDetail: COURSE_VERIFICATION_DETAIL,
+      ibassEligibilityUrl: JAMB_IBASS_ELIGIBILITY_URL,
+    })),
+    get: protectedProcedure.query(async ({ ctx }) => {
+      const profile = await getStudentProfile(ctx.user.id);
+      const course = profile?.courseKey ? getInternalCourse(profile.courseKey) : undefined;
+      return {
+        profile,
+        course: course ?? null,
+        subjectDefault: null as null,
+        validationMessage: "No practice subjects have been selected from this course yet.",
+      };
+    }),
+    save: protectedProcedure.input(coursePreferenceInput).mutation(async ({ ctx, input }) => {
+      const course = getInternalCourse(input.courseKey);
+      if (!course) throw new Error("Choose a course from the ExamPilot course catalogue.");
+      const profile = await updateStudentCoursePreference(ctx.user.id, {
+        courseKey: course.key,
+        institutionPlanningStatus: input.institutionPlanningStatus,
+        targetInstitutionName: input.institutionPlanningStatus === "provided" ? input.targetInstitutionName : null,
+      });
+      return {
+        profile,
+        course,
+        subjectDefault: null as null,
+        validationMessage: "No practice subjects have been selected from this course yet.",
+      };
+    }),
   }),
   practice: router({
     catalogue: protectedProcedure.query(async () => {

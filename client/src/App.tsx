@@ -12,6 +12,7 @@ import PremiumPractice from "./pages/PremiumPractice";
 import PremiumTutor from "./pages/PremiumTutor";
 import PremiumMockExam from "./pages/PremiumMockExam";
 import PracticeMockHistory from "./pages/PracticeMockHistory";
+import CourseDirection from "./pages/CourseDirection";
 import { MasteryRailMini } from "./components/MasteryRailMini";
 
 const StudentDashboard = () => <DashboardLayout><MasteryRailMini current="focus" /><PremiumDashboard /></DashboardLayout>;
@@ -20,6 +21,7 @@ const StudentBilling = () => <DashboardLayout><MasteryRailMini current="ready" /
 const StudentTutor = () => <DashboardLayout><MasteryRailMini current="understand" /><PremiumTutor /></DashboardLayout>;
 const StudentMockExam = () => <DashboardLayout><MasteryRailMini current="practice" /><PremiumMockExam /></DashboardLayout>;
 const StudentMockHistory = () => <DashboardLayout><MasteryRailMini current="practice" /><PracticeMockHistory /></DashboardLayout>;
+const StudentCourseDirection = () => <DashboardLayout><MasteryRailMini current="focus" /><CourseDirection /></DashboardLayout>;
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -31,6 +33,7 @@ function Router() {
       <Route path={"/tutor"} component={StudentTutor} />
       <Route path={"/mock-exam"} component={StudentMockExam} />
       <Route path={"/mock-history"} component={StudentMockHistory} />
+      <Route path={"/course-direction"} component={StudentCourseDirection} />
       <Route path={"/billing"} component={StudentBilling} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}

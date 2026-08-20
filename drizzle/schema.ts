@@ -19,6 +19,8 @@ export const mockExamStatusValues = ["in_progress", "submitted", "expired"] as c
 export const paymentStatusValues = ["pending", "active", "failed", "cancelled", "expired"] as const;
 export const planValues = ["free", "pro", "exam_intensive"] as const;
 export const tutorModeValues = ["direct", "guided"] as const;
+export const institutionPlanningStatusValues = ["not_sure", "provided"] as const;
+export const institutionValidationStatusValues = ["not_checked", "verified"] as const;
 
 /** Core identity record supplied by Manus OAuth and enriched by student onboarding. */
 export const users = mysqlTable("users", {
@@ -35,6 +37,15 @@ export const users = mysqlTable("users", {
     .notNull(),
   subscriptionExpiresAt: timestamp("subscriptionExpiresAt"),
   paystackCustomerCode: varchar("paystackCustomerCode", { length: 128 }),
+  courseKey: varchar("courseKey", { length: 128 }),
+  targetInstitutionName: varchar("targetInstitutionName", { length: 255 }),
+  institutionPlanningStatus: mysqlEnum("institutionPlanningStatus", institutionPlanningStatusValues)
+    .default("not_sure")
+    .notNull(),
+  institutionValidationStatus: mysqlEnum("institutionValidationStatus", institutionValidationStatusValues)
+    .default("not_checked")
+    .notNull(),
+  coursePreferenceUpdatedAt: timestamp("coursePreferenceUpdatedAt"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
   lastSignedIn: timestamp("lastSignedIn").defaultNow().notNull(),

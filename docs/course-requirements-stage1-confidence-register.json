@@ -1,0 +1,26 @@
+{
+  "status": "internal_review_only",
+  "officialValidationSource": "JAMB IBASS public programme records, accessed 2026-08-20",
+  "confidenceDefinitions": {
+    "high": "Draft UTME core matched an official IBASS record and the prior secondary cross-check.",
+    "medium": "An official IBASS record was returned, but it introduced an alternative, restriction, or material difference requiring target-institution verification.",
+    "unvalidated": "No record was returned for the sampled official institutions; do not use the baseline as an admission answer."
+  },
+  "high": [
+    "medicine-and-surgery", "nursing-science", "pharmacy", "pharmacology", "biochemistry", "industrial-engineering", "agricultural-engineering", "computer-science", "economics", "theatre-arts", "education-biology", "education-physics"
+  ],
+  "medium": [
+    "civil-engineering", "electrical-electronics-engineering", "mechanical-engineering", "chemical-engineering", "computer-engineering", "architecture", "quantity-surveying", "surveying-geoinformatics", "urban-regional-planning", "mathematics", "physics", "chemistry", "biology", "geology", "accounting", "business-administration", "banking-finance", "political-science", "sociology", "psychology", "mass-communication", "law", "french", "education-chemistry", "education-mathematics", "education-english"
+  ],
+  "unvalidated": [
+    "nutrition-and-dietetics", "english-literary-studies", "history-international-studies", "fine-applied-arts", "agriculture", "fisheries-aquaculture", "forestry-wildlife", "food-science-technology"
+  ],
+  "materialDifferences": {
+    "geology": "Draft used a Geography-led route; the returned University of Lagos record lists English, Mathematics, Physics, Chemistry.",
+    "surveying-geoinformatics": "Draft included several third-subject alternatives; the returned University of Lagos record lists English, Mathematics, Physics, Chemistry.",
+    "french": "Draft required French; the returned University of Lagos record permits English plus three Arts or Social Science subjects.",
+    "mass-communication": "Draft used a common Literature/Economics/Government route; the returned University of Lagos record uses Literature in English plus two Arts or Social Science subjects.",
+    "engineering-o-levels": "Returned University of Lagos engineering records list Further Mathematics among five O-Level credits; the generic draft had not made that institution-specific requirement explicit."
+  },
+  "futureDisplayRule": "Show 'Common combination — confirm for your university' and direct students to JAMB IBASS until a target-institution lookup returns the authoritative course record."
+}
