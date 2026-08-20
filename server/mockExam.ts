@@ -53,6 +53,44 @@ export function shouldResumePracticeMock(
   return getMockLifecycle(status, startedAt, durationSeconds, now).status === "in_progress";
 }
 
+type ScoreableMockQuestion = {
+  selectedAnswer: string | null;
+  correctAnswer: string;
+};
+
+export function getMockScore(rows: ScoreableMockQuestion[]) {
+  const correct = rows.filter(row => row.selectedAnswer === row.correctAnswer).length;
+  const total = rows.length;
+  return { correct, total, score: total ? Math.round((correct / total) * 100) : 0 };
+}
+
+export function getMockTopicBreakdown(rows: Array<ScoreableMockQuestion & { topicName: string }>) {
+  const topics = new Map<string, { total: number; correct: number }>();
+  rows.forEach(row => {
+    const summary = topics.get(row.topicName) ?? { total: 0, correct: 0 };
+    summary.total += 1;
+    if (row.selectedAnswer === row.correctAnswer) summary.correct += 1;
+    topics.set(row.topicName, summary);
+  });
+  return Array.from(topics.entries()).map(([topicName, summary]) => ({
+    topicName,
+    ...summary,
+    accuracy: summary.total ? Math.round((summary.correct / summary.total) * 100) : 0,
+  }));
+}
+
+export function getMockPace(input: { startedAt: Date; submittedAt: Date; durationSeconds: number; questionCount: number }) {
+  const elapsedSeconds = Math.max(0, Math.min(input.durationSeconds, Math.floor((input.submittedAt.getTime() - input.startedAt.getTime()) / 1000)));
+  const plannedSecondsPerQuestion = input.questionCount ? Math.round(input.durationSeconds / input.questionCount) : 0;
+  const actualSecondsPerQuestion = input.questionCount ? Math.round(elapsedSeconds / input.questionCount) : 0;
+  return {
+    elapsedSeconds,
+    plannedSecondsPerQuestion,
+    actualSecondsPerQuestion,
+    paceStatus: actualSecondsPerQuestion > plannedSecondsPerQuestion * 1.1 ? "over_pace" as const : "within_pace" as const,
+  };
+}
+
 type StartPracticeMockInput = {
   examId: number;
   subjectIds: number[];
@@ -74,6 +112,7 @@ async function getOwnedMockHeader(userId: number, mockExamId: number) {
       submittedAt: mockExams.submittedAt,
       durationSeconds: mockExams.durationSeconds,
       currentQuestionPosition: mockExams.currentQuestionPosition,
+      score: mockExams.score,
       status: mockExams.status,
     })
     .from(mockExams)
@@ -226,6 +265,86 @@ export async function getPracticeMockSession(userId: number, mockExamId: number)
   };
 }
 
+async function finalizePracticeMock(userId: number, mockExamId: number, requestedStatus: "submitted" | "expired") {
+  const header = await getResolvedMockHeader(userId, mockExamId);
+  if (!header) throw new Error("That Practice Mock was not found.");
+  const db = await getDb();
+  if (!db) throw new Error("Practice Mock is currently unavailable.");
+  const status = header.status === "in_progress" ? requestedStatus : header.status;
+  const submittedAt = header.submittedAt ?? new Date();
+  const rows = await db
+    .select({ id: mockExamQuestions.id, selectedAnswer: mockExamQuestions.selectedAnswer, correctAnswer: questions.correctAnswer })
+    .from(mockExamQuestions)
+    .innerJoin(questions, eq(mockExamQuestions.questionId, questions.id))
+    .where(eq(mockExamQuestions.mockExamId, mockExamId));
+  const scoreSummary = getMockScore(rows);
+  await Promise.all(rows.map(row => db
+    .update(mockExamQuestions)
+    .set({ isCorrect: row.selectedAnswer === row.correctAnswer })
+    .where(eq(mockExamQuestions.id, row.id))));
+  await db
+    .update(mockExams)
+    .set({ status, submittedAt, score: scoreSummary.score })
+    .where(and(eq(mockExams.id, mockExamId), eq(mockExams.userId, userId)));
+  return { status, submittedAt, ...scoreSummary };
+}
+
+export async function getPracticeMockResults(userId: number, mockExamId: number) {
+  let header = await getResolvedMockHeader(userId, mockExamId);
+  if (!header) throw new Error("That Practice Mock was not found.");
+  if (header.status === "in_progress") throw new Error("Finish this Practice Mock before viewing its results.");
+  if (header.score === null) {
+    await finalizePracticeMock(userId, mockExamId, header.status === "expired" ? "expired" : "submitted");
+    header = await getOwnedMockHeader(userId, mockExamId);
+    if (!header) throw new Error("That Practice Mock was not found.");
+  }
+  const db = await getDb();
+  if (!db) throw new Error("Practice Mock results are currently unavailable.");
+  const rows = await db
+    .select({
+      position: mockExamQuestions.position,
+      selectedAnswer: mockExamQuestions.selectedAnswer,
+      isCorrect: mockExamQuestions.isCorrect,
+      flagged: mockExamQuestions.flagged,
+      questionId: questions.id,
+      questionText: questions.questionText,
+      options: questions.options,
+      correctAnswer: questions.correctAnswer,
+      explanation: questions.explanation,
+      subjectName: subjects.name,
+      topicName: topics.name,
+      difficulty: questions.difficulty,
+    })
+    .from(mockExamQuestions)
+    .innerJoin(questions, eq(mockExamQuestions.questionId, questions.id))
+    .innerJoin(subjects, eq(questions.subjectId, subjects.id))
+    .innerJoin(topics, eq(questions.topicId, topics.id))
+    .where(eq(mockExamQuestions.mockExamId, mockExamId))
+    .orderBy(asc(mockExamQuestions.position));
+  const review = rows.map(row => ({ ...row, options: row.options as QuestionOption[], isCorrect: Boolean(row.isCorrect) }));
+  const scoreSummary = getMockScore(review);
+  const previousRows = await db
+    .select({ id: mockExams.id, score: mockExams.score, submittedAt: mockExams.submittedAt })
+    .from(mockExams)
+    .where(and(eq(mockExams.userId, userId), eq(mockExams.examId, header.examId), inArray(mockExams.status, ["submitted", "expired"])))
+    .orderBy(desc(mockExams.submittedAt))
+    .limit(20);
+  const previous = previousRows.find(row => row.id !== mockExamId && row.score !== null) ?? null;
+  const submittedAt = header.submittedAt ?? new Date();
+  return {
+    id: header.id,
+    status: header.status,
+    score: header.score ?? scoreSummary.score,
+    correct: scoreSummary.correct,
+    total: scoreSummary.total,
+    submittedAt,
+    topicBreakdown: getMockTopicBreakdown(review),
+    pace: getMockPace({ startedAt: header.startedAt, submittedAt, durationSeconds: header.durationSeconds, questionCount: review.length }),
+    previousMock: previous ? { id: previous.id, score: previous.score!, submittedAt: previous.submittedAt } : null,
+    review,
+  };
+}
+
 async function requireEditableMock(userId: number, mockExamId: number) {
   const header = await getResolvedMockHeader(userId, mockExamId);
   if (!header) throw new Error("That Practice Mock was not found.");
@@ -281,16 +400,14 @@ export async function setPracticeMockPosition(userId: number, input: { mockExamI
 }
 
 export async function submitPracticeMock(userId: number, mockExamId: number) {
-  await requireEditableMock(userId, mockExamId);
-  const db = await getDb();
-  if (!db) throw new Error("Practice Mock is currently unavailable.");
-  const submittedAt = new Date();
-  await db.update(mockExams).set({ status: "submitted", submittedAt }).where(and(eq(mockExams.id, mockExamId), eq(mockExams.userId, userId)));
-  return { status: "submitted" as const, submittedAt };
+  const header = await getResolvedMockHeader(userId, mockExamId);
+  if (!header) throw new Error("That Practice Mock was not found.");
+  return finalizePracticeMock(userId, mockExamId, header.status === "expired" ? "expired" : "submitted");
 }
 
 export async function expirePracticeMock(userId: number, mockExamId: number) {
   const header = await getResolvedMockHeader(userId, mockExamId);
   if (!header) throw new Error("That Practice Mock was not found.");
-  return { status: header.status };
+  if (header.status === "in_progress") return { status: "in_progress" as const };
+  return finalizePracticeMock(userId, mockExamId, "expired");
 }

@@ -6,6 +6,7 @@ import {
   PRACTICE_MOCK_QUESTION_COUNTS,
   expirePracticeMock,
   getActivePracticeMock,
+  getPracticeMockResults,
   getPracticeMockSession,
   getPracticeMockSetup,
   savePracticeMockAnswer,
@@ -34,6 +35,7 @@ export const mockExamRouter = router({
     return startPracticeMock(ctx.user.id, input);
   }),
   session: protectedProcedure.input(mockIdInput).query(({ ctx, input }) => getPracticeMockSession(ctx.user.id, input.mockExamId)),
+  results: protectedProcedure.input(mockIdInput).query(({ ctx, input }) => getPracticeMockResults(ctx.user.id, input.mockExamId)),
   active: protectedProcedure.query(({ ctx }) => getActivePracticeMock(ctx.user.id)),
   saveAnswer: protectedProcedure
     .input(mockIdInput.extend({ questionId: z.number().int().positive(), selectedAnswer: z.string().min(1).max(8) }))

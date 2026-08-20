@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { getMockLifecycle, getMockProgress, getRestoredQuestionPosition, shouldResumePracticeMock } from "./mockExam";
+import { getMockLifecycle, getMockPace, getMockProgress, getMockScore, getMockTopicBreakdown, getRestoredQuestionPosition, shouldResumePracticeMock } from "./mockExam";
 
 describe("Practice Mock lifecycle", () => {
   it("expires an in-progress session at its server-calculated deadline", () => {
@@ -46,5 +46,31 @@ describe("Practice Mock lifecycle", () => {
   it("does not resume an elapsed session", () => {
     const startedAt = new Date("2026-08-20T00:00:00.000Z");
     expect(shouldResumePracticeMock("in_progress", startedAt, 300, new Date("2026-08-20T00:05:00.000Z"))).toBe(false);
+  });
+
+  it("calculates final correctness and a percentage score without treating unanswered questions as correct", () => {
+    expect(getMockScore([
+      { selectedAnswer: "A", correctAnswer: "A" },
+      { selectedAnswer: "B", correctAnswer: "C" },
+      { selectedAnswer: null, correctAnswer: "D" },
+      { selectedAnswer: "D", correctAnswer: "D" },
+    ])).toEqual({ correct: 2, total: 4, score: 50 });
+  });
+
+  it("groups topic accuracy by assigned questions and returns a transparent overall pace summary", () => {
+    expect(getMockTopicBreakdown([
+      { topicName: "Ecology", selectedAnswer: "A", correctAnswer: "A" },
+      { topicName: "Ecology", selectedAnswer: null, correctAnswer: "B" },
+      { topicName: "Vocabulary", selectedAnswer: "C", correctAnswer: "C" },
+    ])).toEqual([
+      { topicName: "Ecology", correct: 1, total: 2, accuracy: 50 },
+      { topicName: "Vocabulary", correct: 1, total: 1, accuracy: 100 },
+    ]);
+    expect(getMockPace({
+      startedAt: new Date("2026-08-20T00:00:00.000Z"),
+      submittedAt: new Date("2026-08-20T00:04:00.000Z"),
+      durationSeconds: 600,
+      questionCount: 10,
+    })).toEqual({ elapsedSeconds: 240, plannedSecondsPerQuestion: 60, actualSecondsPerQuestion: 24, paceStatus: "within_pace" });
   });
 });

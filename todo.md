@@ -66,3 +66,10 @@
 - [x] Create and capture one final post-restart recovery session showing the rendered resumed question, saved answer, review flag, and continuing timer alongside its matching database state
 - [x] Capture explicit post-restart evidence that the saved answer option remains selected and tie it to the persisted question-level answer and flag row
 - [x] Make the selected option state explicit in the rendered Practice Mock UI and capture it after post-restart recovery with matching question-level data
+- [x] Diagnose the Paystack credential test HTTP 403 and identify the minimum credential or code corrective action before Phase 4 Sub-step 4b
+- [x] Review and implement only Phase 4 Sub-step 4b: Practice Mock scoring, persisted results, and student answer review
+- [x] Add idempotent server-side mock finalisation for manual and timed completion, including correctness flags and percentage scores
+- [x] Add protected mock-results data for topic accuracy, overall pace, prior-score comparison, and question-level review
+- [x] Build the Practice Mock results and Tutor-linked review experience using the existing student design system
+- [x] Verify manual and automatic completion scores, persisted correctness, results breakdown, and answer review before Sub-step 4c
+- [x] Verify an auto-expired Practice Mock’s stored score and per-question correctness, then open its detailed answer review and Tutor handoff before finalising Sub-step 4b

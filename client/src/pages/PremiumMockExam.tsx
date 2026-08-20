@@ -6,6 +6,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { trpc } from "@/lib/trpc";
 import { getClampedCountdown } from "@/lib/mockTimer";
 import { getRestoredQuestionIndex, resolvePracticeMockRoute } from "@/lib/mockSessionRecovery";
+import { PracticeMockResults } from "@/pages/PracticeMockResults";
 
 function formatTime(seconds: number) {
   const safeSeconds = Math.max(0, seconds);
@@ -129,7 +130,7 @@ function LivePracticeMock({
 
   if (sessionQuery.isLoading) return <div className="mx-auto h-96 max-w-5xl animate-pulse rounded-3xl bg-[#E6EDF2]" />;
   if (sessionQuery.error || !session) return <section className="mx-auto max-w-3xl rounded-2xl border border-[#E8C8C5] bg-[#FFF5F4] p-6 text-[#862E26]"><CircleAlert className="h-5 w-5" /><p className="mt-2 text-sm">{sessionQuery.error?.message ?? "This Practice Mock is unavailable."}</p><Button onClick={onReturnToSetup} variant="outline" className="mt-4 border-[#DCA8A2] bg-white">Back to setup</Button></section>;
-  if (session.status !== "in_progress") return <section className="mx-auto max-w-3xl rounded-3xl border border-[#DDE5EA] bg-white p-8 text-center"><span className={`mx-auto grid h-12 w-12 place-items-center rounded-2xl ${session.status === "expired" ? "bg-[#FFF0EF] text-[#B5473A]" : "bg-[#E8F4F0] text-[#16775A]"}`}>{session.status === "expired" ? <Clock3 className="h-6 w-6" /> : <Check className="h-6 w-6" />}</span><h1 className="mt-5 font-display text-3xl font-bold tracking-[-0.04em] text-[#163A5F]">{session.status === "expired" ? "Time is up. Your progress is safe." : "Practice Mock submitted."}</h1><p className="mx-auto mt-3 max-w-lg text-sm leading-6 text-[#607082]">Your saved answers and flags are locked. Scoring and review are intentionally held for Phase 4 Sub-step 4b.</p><Button onClick={onReturnToSetup} className="mt-6 rounded-xl bg-[#245EA8] text-white hover:bg-[#1D4F8F]">Start another Practice Mock</Button></section>;
+  if (session.status !== "in_progress") return <PracticeMockResults mockExamId={sessionId} onReturnToSetup={onReturnToSetup} />;
 
   const question = session.questions[currentIndex];
   const answerSaving = saveAnswer.isPending || setFlag.isPending;
