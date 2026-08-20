@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { BookOpenCheck, BrainCircuit, CircleAlert, Compass, Lightbulb, ListChecks, MessageCircleQuestion, RotateCcw, Route, Sparkles, Zap } from "lucide-react";
+import { BookOpenCheck, BrainCircuit, CircleAlert, Compass, Lightbulb, ListChecks, MessageCircleQuestion, RotateCcw, Route, Zap } from "lucide-react";
 import { useLocation } from "wouter";
 import { AIChatBox } from "@/components/AIChatBox";
 import { Button } from "@/components/ui/button";

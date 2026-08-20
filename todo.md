@@ -1,5 +1,13 @@
 # Project TODO
 
+- [x] Remove the visible platform attribution and replace diamond-like AI visual branding with neutral ExamPilot-specific treatment
+- [x] Verify the branding cleanup in the rendered public-facing screens and regression checks
+- [x] Replace remaining reachable sparkle or wand icon instances with explicit neutral ExamPilot icons rather than hiding them
+- [x] Verify the landing, dashboard, course-direction, upgrade, and Tutor surfaces after the icon replacements
+- [x] Determine whether any reported Made with Manus attribution is platform-injected and document the rendered result
+- [x] Render the loaded dashboard, Tutor, and upgrade prompt after neutral icon replacements and verify each visible result
+- [x] Determine the origin of the reported Made with Manus tag in the live rendered experience and document any platform-managed limitation
+
 - [x] Establish the ExamPilot NG project structure and mobile-first design system
 - [x] Extend the Drizzle schema with exam, subject, topic, question, attempt, mock exam, study plan, subscription, and tutor conversation entities
 - [x] Add student profile fields for exam target, exam year, and subscription status

@@ -1,4 +1,4 @@
-import { ArrowRight, LockKeyhole, Sparkles } from "lucide-react";
+import { ArrowRight, LockKeyhole } from "lucide-react";
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 
@@ -29,7 +29,7 @@ export function UpgradePrompt({
           <h2 className="mt-1 font-display text-xl font-bold tracking-tight">{title}</h2>
           <p className="mt-2 max-w-xl text-sm leading-6 text-[#526477]">{description}</p>
           <Button onClick={() => setLocation("/billing")} className="mt-5 h-11 rounded-xl bg-[#245EA8] px-5 text-white hover:bg-[#1D4F8F]">
-            <Sparkles className="mr-2 h-4 w-4" strokeWidth={1.8} /> {ctaLabel} <ArrowRight className="ml-2 h-4 w-4" strokeWidth={1.8} />
+            {ctaLabel} <ArrowRight className="ml-2 h-4 w-4" strokeWidth={1.8} />
           </Button>
         </div>
       </div>
