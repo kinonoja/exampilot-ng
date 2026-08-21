@@ -154,6 +154,17 @@
 - [x] Receive and validate the user-authorized WAEC Physics sample under the same review-only gate
 - [x] Present the complete three-subject WAEC sample review package for approval before any persistence discussion
 - [x] Assess whether the existing exam, subject, topic, and question schema represents WAEC independently of JAMB and document whether migration is needed before future WAEC persistence
+- [x] Diagnose the Paystack credential-probe timeout and document whether it is a key, environment, test, network, or code issue
+- [x] Repair and pass the Paystack credential probe without changing a learner subscription
+- [x] Bound application Paystack API requests so checkout initialization fails clearly instead of hanging indefinitely
+- [x] Confirm an end-to-end Paystack Test Mode subscription with payment evidence, a signed webhook 200, and database subscriptionStatus transition to Pro
+- [x] Capture a safe server-side 200-outcome record for the next signed Paystack webhook event without logging secrets or card data
+- [x] Confirm Test Mode cancellation invokes Paystack’s disable-subscription endpoint and records the resulting entitlement state
+- [x] Handle Paystack’s actual Test Mode `subscription.not_renew` cancellation webhook and verify it marks the matching local subscription cancelled
+- [x] Reconcile charge-success and subscription-create records for the same Paystack recurring payment so cancellation leaves one consistent local subscription row
+- [x] Confirm a declined Test Mode payment keeps the isolated learner on Free with no subscription or entitlement; rendered in-app error remains explicitly unverified under the isolated OAuth-session limitation
+- [x] Stop after the bounded isolated in-app decline attempt: the exact isolated learner cannot enter the authenticated ExamPilot billing route without a separate real OAuth login, so no misleading UI-verification claim was made
+- [x] Deliver the requested evidence-backed Paystack verification report before marking the payment work complete
 - [x] Supersede the paused-generation path after user-authorized original Claude batches passed review and were explicitly approved for persistence
 - [x] Confirm the restored LLM generation path with a small structured JAMB batch probe before any full request (the service remains usage-exhausted)
 - [x] Present the complete JAMB Chemistry/Physics validation and distribution summaries for final spot-check before persistence

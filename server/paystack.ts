@@ -22,7 +22,7 @@ type PaystackTransaction = {
   customer?: { customer_code?: string; email?: string };
 };
 type PaystackWebhookEvent = {
-  event: "charge.success" | "subscription.create" | "subscription.disable" | "invoice.payment_failed" | string;
+  event: "charge.success" | "subscription.create" | "subscription.disable" | "subscription.not_renew" | "invoice.payment_failed" | string;
   data: PaystackTransaction & {
     subscription_code?: string;
     email_token?: string;
@@ -45,9 +45,10 @@ function getPlanCode() {
   return code;
 }
 
-async function paystackRequest<T>(path: string, init?: RequestInit): Promise<T> {
+async function paystackRequestWithMeta<T>(path: string, init?: RequestInit): Promise<{ data: T; statusCode: number; message: string }> {
   const response = await fetch(`${PAYSTACK_API_BASE}${path}`, {
     ...init,
+    signal: init?.signal ?? AbortSignal.timeout(20_000),
     headers: {
       Authorization: `Bearer ${getSecretKey()}`,
       "Content-Type": "application/json",
@@ -56,7 +57,11 @@ async function paystackRequest<T>(path: string, init?: RequestInit): Promise<T> 
   });
   const payload = (await response.json()) as PaystackApiResponse<T>;
   if (!response.ok || !payload.status) throw new Error(payload.message || "Paystack could not process this request.");
-  return payload.data;
+  return { data: payload.data, statusCode: response.status, message: payload.message };
+}
+
+async function paystackRequest<T>(path: string, init?: RequestInit): Promise<T> {
+  return (await paystackRequestWithMeta<T>(path, init)).data;
 }
 
 function parseMetadata(metadata: PaystackTransaction["metadata"]) {
@@ -124,12 +129,12 @@ export async function cancelProSubscription(userId: number) {
   if (!subscription?.paystackSubscriptionCode || !subscription.paystackEmailToken) {
     throw new Error("There is no active recurring subscription available to cancel.");
   }
-  await paystackRequest("/subscription/disable", {
+  const paystack = await paystackRequestWithMeta("/subscription/disable", {
     method: "POST",
     body: JSON.stringify({ code: subscription.paystackSubscriptionCode, token: subscription.paystackEmailToken }),
   });
   await markCancellationRequested(subscription.id);
-  return { success: true } as const;
+  return { success: true, paystack: { statusCode: paystack.statusCode, message: paystack.message } } as const;
 }
 
 export function isValidPaystackSignature(rawBody: Buffer, signature?: string) {
@@ -155,6 +160,7 @@ export async function handlePaystackWebhook(event: PaystackWebhookEvent) {
       await recordSubscriptionCreated(subscriptionEvent);
       return;
     case "subscription.disable":
+    case "subscription.not_renew":
       await recordSubscriptionDisabled(subscriptionEvent);
       return;
     case "invoice.payment_failed":

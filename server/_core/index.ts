@@ -42,7 +42,9 @@ async function startServer() {
       return;
     }
     try {
-      await handlePaystackWebhook(JSON.parse(rawBody.toString("utf8")));
+      const event = JSON.parse(rawBody.toString("utf8")) as Parameters<typeof handlePaystackWebhook>[0];
+      await handlePaystackWebhook(event);
+      console.info("[Paystack webhook] Accepted", { event: event.event, reference: event.data?.reference ?? null, status: 200 });
       res.sendStatus(200);
     } catch (error) {
       console.error("[Paystack webhook] Processing failed", error);

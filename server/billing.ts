@@ -101,6 +101,8 @@ export async function recordVerifiedProPayment(input: {
     .where(eq(subscriptions.paystackReference, input.reference))
     .limit(1);
 
+  const pendingRecurringSubscription = existing[0] ? null : await getCancellableSubscription(input.userId);
+
   const values = {
     plan: "pro" as const,
     amountKobo: input.amountKobo,
@@ -109,8 +111,11 @@ export async function recordVerifiedProPayment(input: {
     expiresAt,
     autoRenew: true,
   };
-  if (existing[0]) {
-    await db.update(subscriptions).set(values).where(eq(subscriptions.id, existing[0].id));
+  if (existing[0] || pendingRecurringSubscription) {
+    await db
+      .update(subscriptions)
+      .set({ ...values, paystackReference: input.reference })
+      .where(eq(subscriptions.id, existing[0]?.id ?? pendingRecurringSubscription!.id));
   } else {
     await db.insert(subscriptions).values({ userId: input.userId, paystackReference: input.reference, ...values });
   }

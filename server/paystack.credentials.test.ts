@@ -7,9 +7,10 @@ describe("Paystack test credentials", () => {
 
     const response = await fetch("https://api.paystack.co/plan?perPage=1", {
       headers: { Authorization: `Bearer ${secretKey}` },
+      signal: AbortSignal.timeout(12_000),
     });
     expect(response.status, "Paystack rejected the configured secret key").toBe(200);
     const payload = (await response.json()) as { status?: boolean };
     expect(payload.status).toBe(true);
-  });
+  }, 15_000);
 });
