@@ -129,6 +129,23 @@
 - [ ] Persist only the truthfully LLM-generated and fully independently validated Chemistry and Physics batches to the existing JAMB question bank
 - [ ] Add automated coverage and verify Chemistry/Physics availability in practice and Practice Mock subject selection
 - [ ] Report the persisted topic, difficulty, and answer-letter distributions before final spot-check
+- [x] Confirm provenance and review the supplied 12-question Physics batch for correctness, explanations, coverage, answer balance, and overlap without persistence
+- [x] Report Physics Batch 1 review-only findings and required revisions before accepting further Physics batches
+- [x] Validate the provenance-confirmed Physics Batch 1 using the corrected electrostatics answer B and baseline distribution A:3, B:4, C:3, D:2
+- [x] Review the forthcoming user-provided Physics Batch 2 against the accepted Batch 1 baseline, remaining key target A:9/B:8/C:9/D:10, and remaining difficulty target 10 easy/21 medium/5 hard without persistence
+- [x] Confirm provenance and review the supplied Physics Batch 2 for correctness, explanations, coverage, overlap, and cumulative balance without persistence
+- [x] Run the full cumulative review-only validation of provenance-confirmed Physics Batches 1 and 2 before any persistence decision
+- [x] Report cumulative Physics Batches 1–2 review-only findings and remaining targets before accepting Batch 3
+- [x] Validate the provenance-confirmed Physics Batch 3 against held Batches 1–2 for structure, correctness, explanations, coverage, overlap, and cumulative calibration without persistence
+- [x] Report Physics Batch 3 review-only findings and exact Batch 4 targets before accepting the final batch
+- [x] Apply and revalidate the user-approved Physics Batch 3 replacements for duplicate avoidance and coverage completion without persistence
+- [x] Validate the provenance-confirmed final Physics Batch 4 against all held batches for correctness, full coverage, overlap, exact answer balance, and difficulty calibration without persistence
+- [x] Report the final 48-question Physics review-only result and obtain explicit persistence approval before any database write
+- [x] Transactionally persist the explicitly approved 48-question Physics collection to the JAMB bank with `isAIGenerated: true`
+- [x] Verify persisted Physics subject, topics, record count, provenance, answer balance, difficulty mix, coverage, and no duplicate records in the database
+- [x] Verify Physics appears in authenticated Practice filters and Practice Mock subject selection with usable question availability
+- [x] Run focused and full automated tests plus TypeScript validation after Physics persistence
+- [x] Deliver step-by-step Physics persistence and verification evidence before checkpointing
 - [x] Confirm whether the approved content-generation service is available for review-only WAEC samples; hold samples if the same exhausted service blocks them
 - [x] Refine an official-source-bounded topic plan for WAEC General Mathematics, Chemistry, and Physics
 - [ ] Create five original review-only WAEC samples per approved subject only if truthful AI-generation provenance can be established
