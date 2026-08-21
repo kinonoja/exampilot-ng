@@ -26,6 +26,23 @@ The approved importer completed a single database transaction with the following
 
 The importer also carries the user-approved correction for the Batch 1 electrostatics question: `0.6 N` is stored with key **B**. Its source is stored as `ExamPilot Approved Claude Physics Batch v1`, and each record carries the approved Claude-authored, user-authorized provenance tags.
 
+### Approved-area distribution from stored Physics rows
+
+| Approved Physics area | Persisted questions |
+| --- | ---: |
+| Measurements, units, dimensions, and errors | 3 |
+| Scalars and vectors | 2 |
+| Motion, Newton’s laws, projectiles, circular motion, and SHM | 6 |
+| Gravitation and equilibrium | 3 |
+| Work, energy, power, friction, machines, and elasticity | 5 |
+| Pressure and liquids at rest | 3 |
+| Thermal physics | 7 |
+| Waves and sound | 6 |
+| Light and optics | 5 |
+| Electrostatics and current electricity | 3 |
+| Magnetism, electromagnetic induction, and alternating current | 3 |
+| Atomic, nuclear, and basic electronics | 2 |
+
 ## Automated verification
 
 The new `physicsAvailability.integration.test.ts` passed. It queries the real persisted catalogue and verifies that Practice filters include JAMB Physics with 34 topics and that Practice Mock reports 0 original and 48 approved-AI Physics questions.

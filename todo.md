@@ -122,13 +122,13 @@
 - [x] Draft five original, quality-checked Chemistry review questions in the existing question-bank format without persisting them
 - [x] Draft five original, quality-checked Physics review questions in the existing question-bank format without persisting them
 - [x] Present the topic plan and ten-question review sample for approval before generating or saving any full batch
-- [ ] Generate 48 original JAMB Chemistry questions through the approved LLM path with truthful `isAIGenerated: true` provenance
-- [ ] Generate 48 original JAMB Physics questions through the approved LLM path with truthful `isAIGenerated: true` provenance
-- [ ] Validate every generated record for schema integrity, option quality, explanation quality, topical coverage, and independently recomputed numerical results from question content
-- [ ] Enforce a reasonably balanced A/B/C/D correct-answer distribution for each subject batch
-- [ ] Persist only the truthfully LLM-generated and fully independently validated Chemistry and Physics batches to the existing JAMB question bank
-- [ ] Add automated coverage and verify Chemistry/Physics availability in practice and Practice Mock subject selection
-- [ ] Report the persisted topic, difficulty, and answer-letter distributions before final spot-check
+- [x] Generate 48 original JAMB Chemistry questions through the approved user-authorized Claude composition path with truthful `isAIGenerated: true` provenance
+- [x] Generate 48 original JAMB Physics questions through the approved user-authorized Claude composition path with truthful `isAIGenerated: true` provenance
+- [x] Validate every generated record for schema integrity, option quality, explanation quality, topical coverage, and independently recomputed numerical results from question content
+- [x] Enforce a reasonably balanced A/B/C/D correct-answer distribution for each subject batch
+- [x] Persist only the truthfully AI-generated and fully independently validated Chemistry and Physics batches to the existing JAMB question bank
+- [x] Add automated coverage and verify Chemistry/Physics availability in practice and Practice Mock subject selection
+- [x] Report the persisted topic, difficulty, answer-letter, and approved-area distributions before final spot-check
 - [x] Confirm provenance and review the supplied 12-question Physics batch for correctness, explanations, coverage, answer balance, and overlap without persistence
 - [x] Report Physics Batch 1 review-only findings and required revisions before accepting further Physics batches
 - [x] Validate the provenance-confirmed Physics Batch 1 using the corrected electrostatics answer B and baseline distribution A:3, B:4, C:3, D:2
@@ -150,9 +150,9 @@
 - [x] Refine an official-source-bounded topic plan for WAEC General Mathematics, Chemistry, and Physics
 - [ ] Create five original review-only WAEC samples per approved subject only if truthful AI-generation provenance can be established
 - [ ] Present the WAEC topic plan and samples for approval before generating or persisting any WAEC batch
-- [ ] Keep the JAMB Chemistry and Physics full-batch expansion paused until approved LLM capacity is available, then regenerate before any persistence
+- [x] Supersede the paused-generation path after user-authorized original Claude batches passed review and were explicitly approved for persistence
 - [x] Confirm the restored LLM generation path with a small structured JAMB batch probe before any full request (the service remains usage-exhausted)
-- [ ] Present the complete JAMB Chemistry/Physics validation and distribution summary for final spot-check before persistence
+- [x] Present the complete JAMB Chemistry/Physics validation and distribution summaries for final spot-check before persistence
 - [x] Review the user-authorized Claude-authored Chemistry stopgap batch for correctness, explanations, answer distribution, JAMB-plan fit, and bank overlap without persistence
 - [x] Report review-only findings for the first user-provided Chemistry batch before accepting later stopgap batches
 - [x] Apply the user-approved revised explanation for held Chemistry Question 5 without persisting it
