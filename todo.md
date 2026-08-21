@@ -148,8 +148,12 @@
 - [x] Deliver step-by-step Physics persistence and verification evidence before checkpointing
 - [x] Confirm whether the approved content-generation service is available for review-only WAEC samples; hold samples if the same exhausted service blocks them
 - [x] Refine an official-source-bounded topic plan for WAEC General Mathematics, Chemistry, and Physics
-- [ ] Create five original review-only WAEC samples per approved subject only if truthful AI-generation provenance can be established
-- [ ] Present the WAEC topic plan and samples for approval before generating or persisting any WAEC batch
+- [x] Create five original review-only WAEC samples per approved subject through the user-authorized Claude path with truthful AI-generation provenance
+- [x] Present the WAEC topic plan and samples for approval before generating or persisting any WAEC batch
+- [x] Validate the supplied user-authorized WAEC Chemistry and General Mathematics samples for correctness, official-plan fit, explanations, and overlap without persistence
+- [x] Receive and validate the user-authorized WAEC Physics sample under the same review-only gate
+- [x] Present the complete three-subject WAEC sample review package for approval before any persistence discussion
+- [x] Assess whether the existing exam, subject, topic, and question schema represents WAEC independently of JAMB and document whether migration is needed before future WAEC persistence
 - [x] Supersede the paused-generation path after user-authorized original Claude batches passed review and were explicitly approved for persistence
 - [x] Confirm the restored LLM generation path with a small structured JAMB batch probe before any full request (the service remains usage-exhausted)
 - [x] Present the complete JAMB Chemistry/Physics validation and distribution summaries for final spot-check before persistence
