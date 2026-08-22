@@ -256,3 +256,10 @@
 - [x] Capture authenticated, non-mutating Practice evidence that one Physics question is rendered answer-ready from the approved 48-question bank
 - [x] Capture authenticated Mock setup evidence that Chemistry and Physics remain selectable within the three-subject contract
 - [x] Deliver an evidence-backed Priority 2 walkthrough without creating attempts or Mock sessions
+- [x] Define and document non-mutating versus prior-evidence boundaries for the requested Priority 3 regression pass
+- [x] Verify authenticated sign-in state and answer-ready Practice loading across Biology, Use of English, Mathematics, Chemistry, and Physics
+- [x] Reconcile Tutor modes, mode-switching, linked-question explanation, and Free-limit coverage against current regression evidence and safe live state
+- [x] Reconcile Mock setup, timed persistence, scoring, results, and history against current regression evidence and safe live state
+- [x] Verify the authenticated billing page and checkout entry UI without initiating payment or changing webhook logic
+- [x] Verify the course onboarding flow loads with saved-direction controls and institution-honest wording without changing learner preferences
+- [x] Run the full application-owned quality gate and report Priority 3 evidence for each requested area

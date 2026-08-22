@@ -95,3 +95,33 @@ The same authenticated session then opened `/practice?subjectId=2370001` for **P
 The authenticated Practice Mock setup rendered Chemistry and Physics as selectable subject cards, each labelled **0 original questions · 48 approved AI questions**. The setup displayed **Choose up to 3**, had three default included subjects, and showed the eligible-question count without starting a mock. The next non-mutating step will replace one default selection with Physics to demonstrate Chemistry and Physics can coexist inside the limit.
 
 Biology was deselected, reducing the included-subject count to two without initiating any session. Physics was then selected beside the already-selected Chemistry and Mathematics cards. The page visibly showed **Chemistry** and **Physics** as selected, the label **Choose up to 3**, and **Included subjects 3**. The **Start Practice Mock** control was deliberately not used, so no Mock row, answer, or attempt was created. This demonstrates that the repaired subject-limit contract does not block Chemistry or Physics when they are selected together within the allowed three-subject set.
+
+## Tuesday Sprint Priority 3 — five-subject Practice regression
+
+The authenticated learner opened `/practice?subjectId=3` for **Biology**. The selector retained Biology, loaded the Biology-specific topic list, and then rendered a hard **Genetics** question (“A dominant allele is one that:”) with four radio options and **Submit answer**. No option was selected and no submit action was used.
+
+The authenticated learner then opened `/practice?subjectId=2` for the officially labelled **Use of English** subject. Its selector and subject-specific topic list loaded, including comprehension, vocabulary, grammar, speech, and summary areas, then rendered an easy **Articles** question (“She is ___ honest student.”) with four radio options and **Submit answer**. No option was selected and no submit action was used.
+
+The authenticated learner then opened `/practice?subjectId=1` for **Mathematics**. Its selector and Mathematics-specific topic list loaded, including algebra, calculus, geometry, statistics, and trigonometry, then rendered a medium **Sequences** question about an arithmetic sequence with four radio options and **Submit answer**. No option was selected and no submit action was used.
+
+## Tuesday Sprint Priority 3 — Tutor regression boundary
+
+The authenticated Tutor screen rendered its topic input, **Direct** and **Guided** mode descriptions, and the explicit statement that learners can change mode during a session. It also correctly stated that linked Practice questions retain a verified explanation if the learning service is temporarily unavailable. No session was started: starting a generic Tutor session can consume a daily allowance and would currently reach the external provider-capacity boundary. Direct/Guided response behavior, in-session mode switching, linked-question handoff, and Free-limit behavior are therefore reported from focused regression tests and earlier linked-question browser validation rather than represented as a new live generic-Tutor response.
+
+## Tuesday Sprint Priority 3 — Mock history live evidence
+
+The authenticated **Mock history** page loaded eight completed JAMB Practice Mock records with submitted/time-elapsed statuses, dates, question/subject counts, scores, and **View full results** controls. No result was opened and no Mock was started. This confirms the history surface and persisted completed-record metadata render in the running app; the safer evidence for timer, active-session reload recovery, scoring, results calculation, and history ordering remains the focused lifecycle regression suite and the previously documented close/reopen browser validation.
+
+## Tuesday Sprint Priority 3 — Billing screen live evidence
+
+The authenticated Billing page rendered the current **Pro** plan as active until **September 19, 2026**, the NGN **₦1,500/month** plan details, server-side-verification copy, payment history, and the visible **Cancel recurring billing** control. No checkout or cancellation control was used. The checkout entry point is correctly absent for this already-Pro learner; earlier Test Mode evidence remains the basis for checkout initialization and webhook behavior, both of which are explicitly out of scope for this regression pass.
+
+## Tuesday Sprint Priority 3 — Course Direction live evidence
+
+The authenticated Course Direction page loaded the saved **Computer Science** choice, its common guide (English Language plus Mathematics, Physics, and Chemistry or Biology), **Not sure yet** target-institution state, permanent **“Common combination — confirm for your university.”** framing, and the IBASS Eligibility Checker link. It explicitly stated that no practice subjects were selected from the course alone. No course, institution, or save control was changed during this verification.
+
+## Tuesday Sprint Priority 3 — code-level regression result and evidence boundary
+
+`pnpm validate` passed on 22 August 2026 with **37 application-owned Vitest files / 95 tests** and `tsc --noEmit`. The suite includes focused coverage for the five-subject catalogue availability, Practice Mock limits/lifecycle/scoring/recovery/history, Tutor modes/fallback/Free limits, billing state, course-direction persistence, and learner-facing availability errors.
+
+The same authenticated learner session remained logged in while accessing Practice, Tutor, Mock history, Billing, and Course Direction, which verifies current authenticated navigation. A separate **first-time learner signup/login and account-recovery flow was not rerun** in this pass because there was no separate authorised test identity and signing out the active learner would be disruptive. That remains a clearly bounded unverified launch-evidence item rather than a claimed pass. No payment, checkout, cancellation, Tutor session, practice attempt, Mock session, course-direction save, or webhook action was initiated.
