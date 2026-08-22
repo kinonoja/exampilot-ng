@@ -8,6 +8,17 @@ The source is published to the private GitHub repository: <https://github.com/ki
 
 Manus provides built-in hosting with custom-domain support. If Vercel remains the preferred host, the compatibility work below is required before relying on it for student traffic.
 
+## Manus Forge portability boundary
+
+The active `BUILT_IN_FORGE_API_URL` and `BUILT_IN_FORGE_API_KEY` values are **Manus-managed runtime credentials**, automatically injected into this project’s managed environment. They are not a user-owned API key product that has been exported or independently provisioned for this Vercel deployment. Official Manus cloud-infrastructure documentation describes the backend, database, storage, and deployment as managed together by Manus, rather than as portable external-host credentials.[^manus-cloud]
+
+Accordingly, **do not copy these values to Vercel and do not assume Tutor or question generation will work there.** At present there is no verified, supported external-hosting credential path for this app’s Forge-backed Tutor/generation calls. A Vercel deployment can retain the existing truthful temporary-unavailability state, but must not promise active Tutor/generation until one of the following is complete:
+
+1. Manus confirms a supported external-hosting Forge credential arrangement for this application; or
+2. the Tutor and generation server integration is migrated to a user-owned model provider/API key or another portable inference provider.
+
+[^manus-cloud]: [Manus, “Cloud Infrastructure”](https://manus.im/docs/website-builder/cloud-infrastructure), accessed 22 August 2026.
+
 ## Runtime environment variables
 
 Set the following values in the **Production**, **Preview**, and **Development** environments appropriate to the stage being tested. Never commit their values to GitHub.
