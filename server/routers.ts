@@ -11,7 +11,7 @@ import {
   updateStudentCoursePreference,
   updateStudentProfile,
 } from "./db";
-import { COOKIE_NAME } from "@shared/const";
+import { COOKIE_NAME, TEMPORARY_ASSISTANT_UNAVAILABLE_MESSAGE } from "@shared/const";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
 import { protectedProcedure, publicProcedure, router } from "./_core/trpc";
@@ -49,7 +49,7 @@ async function withLLMAvailabilityBoundary<T>(work: () => Promise<T>, feature: "
     return await work();
   } catch (error) {
     if (isExhaustedLLMError(error)) {
-      throw new TRPCError({ code: "SERVICE_UNAVAILABLE", message: "This feature is temporarily unavailable, please try again later." });
+      throw new TRPCError({ code: "SERVICE_UNAVAILABLE", message: TEMPORARY_ASSISTANT_UNAVAILABLE_MESSAGE });
     }
     throw error;
   }

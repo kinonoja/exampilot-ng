@@ -1,3 +1,5 @@
+import { TEMPORARY_ASSISTANT_UNAVAILABLE_MESSAGE } from "@shared/const";
+
 export function isRetryableTransportError(error: unknown) {
   const message = error instanceof Error ? error.message : String(error ?? "");
   const status = typeof error === "object" && error !== null && "data" in error
@@ -18,7 +20,7 @@ export function getStudentFacingError(error: unknown, fallback: string) {
 export function getAssistantAvailabilityMessage(error: unknown, assistantName: "Tutor" | "Question generation") {
   const message = error instanceof Error ? error.message : String(error ?? "");
   if (/usage exhausted|precondition failed|llm invoke failed/i.test(message)) {
-    return "This feature is temporarily unavailable, please try again later.";
+    return TEMPORARY_ASSISTANT_UNAVAILABLE_MESSAGE;
   }
   return getStudentFacingError(error, `${assistantName} is temporarily unavailable. Please try again later.`);
 }

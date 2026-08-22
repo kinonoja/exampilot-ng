@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { TEMPORARY_ASSISTANT_UNAVAILABLE_MESSAGE } from "@shared/const";
 import { getAssistantAvailabilityMessage, getStudentFacingError, isRetryableTransportError } from "./studentErrorMessage";
 
 describe("student error messages", () => {
@@ -9,8 +10,8 @@ describe("student error messages", () => {
   });
 
   it("translates exhausted LLM capacity into a safe student message", () => {
-    expect(getAssistantAvailabilityMessage(new Error("LLM invoke failed: 412 Precondition Failed – usage exhausted"), "Tutor")).toBe("This feature is temporarily unavailable, please try again later.");
-    expect(getAssistantAvailabilityMessage(new Error("usage exhausted"), "Question generation")).toBe("This feature is temporarily unavailable, please try again later.");
+    expect(getAssistantAvailabilityMessage(new Error("LLM invoke failed: 412 Precondition Failed – usage exhausted"), "Tutor")).toBe(TEMPORARY_ASSISTANT_UNAVAILABLE_MESSAGE);
+    expect(getAssistantAvailabilityMessage(new Error("usage exhausted"), "Question generation")).toBe(TEMPORARY_ASSISTANT_UNAVAILABLE_MESSAGE);
   });
 
   it("keeps a direct server message only when it is not a transport failure", () => {

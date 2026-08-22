@@ -25,3 +25,9 @@ The authenticated Course Direction route loaded the searchable 46-course catalog
 The authenticated Billing route displayed the active Pro plan, its 19 September 2026 access expiry, recurring-billing control, and payment-history records without initiating checkout or cancellation. The Mock History route displayed completed JAMB Practice Mock entries with scores, completion states, and view-results links without creating or altering a session.
 
 The full regression command ran 26 of 27 test files successfully (68 of 69 tests). The sole failure was the external `server/paystack.credentials.test.ts` probe: Paystack returned a Cloudflare HTML **403** response before the API could validate the credential. A repeat probe with a descriptive user-agent received the same response. This is recorded as an external network/WAF validation blocker, not as an application billing-flow regression; the authenticated Billing UI itself loaded normally and no Paystack mutation was attempted.
+
+## Recurring Question Generation report — 01:01 Africa/Lagos
+
+The repeated learner request still reached the external generation availability boundary. Its safe student-facing message was correct, but the global React Query mutation-cache subscription then emitted the same handled condition as `[API Mutation Error]` in the browser console, which made an expected, rendered availability state look like an unhandled product error.
+
+The global logger now suppresses this single, canonical temporary-availability message while continuing to log all unexpected query and mutation errors. The message is centralised in `shared/const.ts` so the server boundary, UI translation, and log-suppression rule cannot drift. Focused coverage passes: 7 tests across the API logging helper, student-message helper, and server availability boundary. This eliminates the reported console error; it does not make the externally unavailable generation provider produce questions.

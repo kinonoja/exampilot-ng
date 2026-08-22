@@ -4,6 +4,7 @@ export const AXIOS_TIMEOUT_MS = 30_000;
 export const UNAUTHED_ERR_MSG = 'Please login (10001)';
 export const NOT_ADMIN_ERR_MSG = 'You do not have required permission (10002)';
 export const PRACTICE_MOCK_MAX_SUBJECTS = 3;
+export const TEMPORARY_ASSISTANT_UNAVAILABLE_MESSAGE = "This feature is temporarily unavailable, please try again later.";
 
 // One-time nonce cookie that binds an OAuth login to the browser that started
 // it. The `__Host-` prefix forces the cookie host-only (Secure, Path=/, no
