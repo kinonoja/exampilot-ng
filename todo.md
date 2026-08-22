@@ -237,6 +237,9 @@
 - [x] Phase 2: Close safe, app-controlled payment evidence gaps and prepare production-readiness safeguards without touching live keys or payments
 - [ ] Human-authorised payment evidence: verify the rendered authenticated Test Mode decline flow, then perform the staged Live Mode checklist only with explicit approval immediately before each transaction
 - [x] Diagnose the newly reported temporary-unavailability message and repair any application-controlled regression without misrepresenting external capacity
+- [x] Research and reconcile the authoritative current JAMB subject catalogue and syllabus/topic coverage
+- [x] Prepare a source-linked review package and import design for all JAMB subject/topic structures
+- [ ] Obtain explicit approval before importing JAMB subject/topic structures or creating new question content
 - [x] Phase 3: Add truthful WAEC-ready structural filters and empty states while keeping held WAEC samples unpersisted and NECO/NABTEB source-gated
 - [x] Phase 4: Improve remaining reliability, test coverage, accessibility, observability, architecture hygiene, and next-agent documentation
 - [x] Produce an Agent Completion Report mapping the issue register to final statuses and changed files
