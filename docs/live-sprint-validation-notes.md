@@ -31,3 +31,9 @@ The full regression command ran 26 of 27 test files successfully (68 of 69 tests
 The repeated learner request still reached the external generation availability boundary. Its safe student-facing message was correct, but the global React Query mutation-cache subscription then emitted the same handled condition as `[API Mutation Error]` in the browser console, which made an expected, rendered availability state look like an unhandled product error.
 
 The global logger now suppresses this single, canonical temporary-availability message while continuing to log all unexpected query and mutation errors. The message is centralised in `shared/const.ts` so the server boundary, UI translation, and log-suppression rule cannot drift. Focused coverage passes: 7 tests across the API logging helper, student-message helper, and server availability boundary. This eliminates the reported console error; it does not make the externally unavailable generation provider produce questions.
+
+## Course Direction save report
+
+The authenticated Course Direction screen now displays the learner’s persisted direction as **Nutrition and Dietetics** with the saved “not sure yet” institution choice. This confirms the protected save path persisted the earlier selection. The prior interface nevertheless made saving ambiguous: it silently disabled an incomplete form and refreshed data without an explicit confirmation after a successful save. The repair makes the action always explain incomplete input and provides an inline confirmation after a valid save.
+
+The unchanged saved direction was submitted once to verify the repaired UI. It displayed: **“Saved. Nutrition and Dietetics is now your course direction. You can add a target university later.”** A fresh route load then continued to display Nutrition and Dietetics as the current direction. This proves save confirmation and persisted reload behavior without changing the learner’s selected course or institution choice.

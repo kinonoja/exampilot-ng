@@ -222,3 +222,5 @@
 - [x] Complete the uploaded Priority 2 and Priority 3 visibility/regression evidence without mutating protected learner or payment data
 - [x] Diagnose the recurring dashboard Question Generation failure reported at 2026-08-22T01:01:31 Africa/Lagos and determine whether any app-controlled remediation remains
 - [x] Implement and verify any safe app-controlled remediation for recurring unavailable Question Generation requests
+- [x] Reproduce and diagnose the Course Direction save interaction reported as not persisting
+- [x] Fix and verify Course Direction save, reload persistence, and learner-facing success/error feedback
