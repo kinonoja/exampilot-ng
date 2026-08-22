@@ -228,3 +228,6 @@
 - [x] Fix and verify the Tutor deep link opens with the same question context and a clear ready-to-explain state
 - [x] Reproduce and diagnose the reported Tutor Guided and Direct response failure and identify whether it is transport, provider capacity, or application handling
 - [x] Fix and verify Tutor Direct and Guided failure states so they accurately distinguish a connection problem from temporary provider unavailability
+- [x] Inspect the Course Direction-to-dashboard data flow and define safe course-aware recommendation behavior
+- [x] Implement dashboard guidance that updates from the learner’s saved target course without silently changing practice subjects
+- [x] Verify dashboard guidance refreshes after a valid Course Direction change and remains institution-honest

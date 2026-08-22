@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { ArrowRight, ArrowUpRight, BarChart3, BookOpenCheck, CalendarDays, CheckCircle2, CircleAlert, Compass, Crown, Target, TimerReset, TrendingUp } from "lucide-react";
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
+import { CourseAdaptiveDashboardCard } from "@/components/CourseAdaptiveDashboardCard";
 import { trpc } from "@/lib/trpc";
 import { getAssistantAvailabilityMessage, getStudentFacingError } from "@/lib/studentErrorMessage";
 
@@ -15,6 +16,7 @@ function MetricCard({ icon: Icon, label, value, detail, tone = "blue" }: { icon:
 export default function PremiumDashboard() {
   const [, setLocation] = useLocation();
   const profileQuery = trpc.profile.get.useQuery();
+  const courseDirectionQuery = trpc.courseDirection.get.useQuery();
   const accessQuery = trpc.practice.access.useQuery();
   const catalogueQuery = trpc.practice.catalogue.useQuery(undefined, { refetchOnWindowFocus: false });
   const saveProfile = trpc.profile.save.useMutation({ onSuccess: () => profileQuery.refetch() });
@@ -27,8 +29,8 @@ export default function PremiumDashboard() {
   useEffect(() => { if (profileQuery.data?.examTarget) setExamTarget(profileQuery.data.examTarget); if (profileQuery.data?.examYear) setExamYear(profileQuery.data.examYear); }, [profileQuery.data]);
   useEffect(() => { if (!generationTopicId && catalogueQuery.data?.topics[0]) setGenerationTopicId(catalogueQuery.data.topics[0].id); }, [catalogueQuery.data, generationTopicId]);
   if (profileQuery.isLoading) return <div className="mx-auto w-full max-w-6xl space-y-5 pb-12"><div className="h-44 animate-pulse rounded-3xl bg-[#E6EDF2]" /><div className="grid gap-4 sm:grid-cols-3"><div className="h-32 animate-pulse rounded-2xl bg-[#E6EDF2]" /><div className="h-32 animate-pulse rounded-2xl bg-[#E6EDF2]" /><div className="h-32 animate-pulse rounded-2xl bg-[#E6EDF2]" /></div></div>;
-  const dashboardError = profileQuery.error ?? accessQuery.error ?? catalogueQuery.error;
-  if (dashboardError) return <section className="mx-auto max-w-3xl rounded-2xl border border-[#E8C8C5] bg-[#FFF5F4] p-6 text-[#862E26]"><CircleAlert className="h-5 w-5" /><p className="mt-2 text-sm leading-6">{getStudentFacingError(dashboardError, "Your study dashboard is unavailable right now.")}</p><Button onClick={() => { profileQuery.refetch(); accessQuery.refetch(); catalogueQuery.refetch(); }} variant="outline" className="mt-4 border-[#DCA8A2] bg-white">Try again</Button></section>;
+  const dashboardError = profileQuery.error ?? courseDirectionQuery.error ?? accessQuery.error ?? catalogueQuery.error;
+  if (dashboardError) return <section className="mx-auto max-w-3xl rounded-2xl border border-[#E8C8C5] bg-[#FFF5F4] p-6 text-[#862E26]"><CircleAlert className="h-5 w-5" /><p className="mt-2 text-sm leading-6">{getStudentFacingError(dashboardError, "Your study dashboard is unavailable right now.")}</p><Button onClick={() => { profileQuery.refetch(); courseDirectionQuery.refetch(); accessQuery.refetch(); catalogueQuery.refetch(); }} variant="outline" className="mt-4 border-[#DCA8A2] bg-white">Try again</Button></section>;
 
   const profile = profileQuery.data;
   const isConfigured = Boolean(profile?.examTarget && profile?.examYear);
@@ -42,7 +44,7 @@ export default function PremiumDashboard() {
 
     <section className="grid gap-4 sm:grid-cols-3"><MetricCard icon={BookOpenCheck} label="Practice today" value={practiceValue} detail={isPro ? "Pro practice is available whenever you are ready." : "Free daily practice allowance."} tone="blue" /><MetricCard icon={Target} label="Exam target" value={profile?.examTarget || "Set up"} detail={profile?.examYear ? `${profile.examYear} sitting` : "Choose your exam year."} tone="navy" /><MetricCard icon={CalendarDays} label="Study rhythm" value="Begin" detail="Your study rhythm will build as you return." tone="green" /></section>
 
-    <section className="rounded-2xl border border-[#DDE5EA] bg-white p-5 sm:p-6"><div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center"><div className="flex items-start gap-3"><span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-[#E8F0FA] text-[#245EA8]"><Compass className="h-5 w-5" strokeWidth={1.8} /></span><div><p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#245EA8]">Course direction</p><h2 className="mt-1 font-display text-2xl font-bold tracking-[-0.035em] text-[#163A5F]">{profile?.courseKey ? "Keep your university plan current." : "Tell us what you are working toward."}</h2><p className="mt-1 max-w-2xl text-sm leading-6 text-[#607082]">{profile?.courseKey ? "Your course direction is saved. Practice subjects stay unchanged until a course and target university can be officially checked together." : "Choose a course and, if you know it, a target university. You can select Not sure yet and update it later."}</p></div></div><Button onClick={() => setLocation("/course-direction")} className="h-11 shrink-0 rounded-xl bg-[#245EA8] text-white hover:bg-[#1D4F8F]">{profile?.courseKey ? "Edit course direction" : "Choose course direction"}<ArrowRight className="ml-2 h-4 w-4" /></Button></div></section>
+    <CourseAdaptiveDashboardCard course={courseDirectionQuery.data?.course} subjects={catalogueQuery.data?.subjects ?? []} onEditCourse={() => setLocation("/course-direction")} onPracticeSubject={subjectId => setLocation(`/practice?subjectId=${subjectId}`)} />
 
     <section className="rounded-2xl border border-[#DDE5EA] bg-white p-5 sm:p-6"><div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-center"><div className="flex items-start gap-3"><span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-[#E8F0FA] text-[#245EA8]"><TimerReset className="h-5 w-5" strokeWidth={1.8} /></span><div><p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#245EA8]">Practice Mock</p><h2 className="mt-1 font-display text-2xl font-bold tracking-[-0.035em] text-[#163A5F]">Test your pace in a short saved session.</h2><p className="mt-1 max-w-2xl text-sm leading-6 text-[#607082]">Choose from the current JAMB bank, keep every answer as you go, and use the timer and review flags to practise exam rhythm. This is not the full JAMB mock format.</p></div></div><div className="flex flex-wrap gap-3"><Button onClick={() => setLocation("/mock-history")} variant="outline" className="h-11 rounded-xl border-[#C8D6E1] bg-white text-[#245EA8] hover:bg-[#EEF4F8]">View mock history</Button><Button onClick={() => setLocation("/mock-exam")} className="h-11 shrink-0 rounded-xl bg-[#245EA8] text-white hover:bg-[#1D4F8F]">Open Practice Mock <ArrowRight className="ml-2 h-4 w-4" /></Button></div></div></section>
 

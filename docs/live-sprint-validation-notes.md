@@ -53,3 +53,11 @@ The underlying response is a server-side `503` carrying the intentional message 
 A separate fresh linked-question session was opened for the matching Guided-mode verification; the request entered the same controlled provider-availability path. Its final student-facing response is being captured as a distinct check so the Guided interaction is not inferred from Direct-mode behavior.
 
 Guided verification passed. It returned the linked question’s stored key idea and then asked the learner to identify the option that matches it, preserving guided-study behavior without claiming that the learner’s connection failed. Both Direct and Guided now provide usable, question-specific help while the external provider continues to return 412. Full application-owned regression: 30 files / 77 tests pass; TypeScript passes.
+
+## Course-adaptive dashboard — in progress
+
+The authenticated dashboard now reads the saved Course Direction rather than static course copy. Live verification rendered **Education and Biology path**, its faculty, the permanent **Common combination — confirm for your university** framing, and an explicit **Practice Biology** action from the saved course combination. This is an advisory path, not a silent subject default: the learner must choose the subject action, and the common-combination disclaimer remains visible.
+
+Selecting **Practice Biology** opened `/practice?subjectId=3`, set the live Practice filters to JAMB and Biology, and loaded a Biology question. No answer was selected or submitted. This verifies that the course-adaptive dashboard changes the recommended focus when the saved course changes while leaving the learner in control of whether to practise it.
+
+The course-guidance model is covered with two regression cases: it recalculates the available current-bank subjects when the saved course changes, and it retains the university-confirmation framing for a course with no current-bank match. The new subject-link parser is also covered. Full application-owned regression: 31 files / 80 tests pass; TypeScript passes.
