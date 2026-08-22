@@ -224,3 +224,5 @@
 - [x] Implement and verify any safe app-controlled remediation for recurring unavailable Question Generation requests
 - [x] Reproduce and diagnose the Course Direction save interaction reported as not persisting
 - [x] Fix and verify Course Direction save, reload persistence, and learner-facing success/error feedback
+- [x] Reproduce and diagnose the incorrect-answer Practice-to-Tutor explanation handoff
+- [x] Fix and verify the Tutor deep link opens with the same question context and a clear ready-to-explain state
