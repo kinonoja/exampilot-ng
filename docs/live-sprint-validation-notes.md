@@ -65,3 +65,7 @@ The course-guidance model is covered with two regression cases: it recalculates 
 ## Truthful future-board Practice coverage
 
 The authenticated Practice route now shows a board-coverage selector with JAMB, WAEC, NECO, and NABTEB. JAMB remained the only live filterable catalogue. Selecting WAEC showed **WAEC practice is coming soon**, stated that reviewed samples are held for explicit human approval, and rendered **No questions are loaded or saved for this board** with a return-to-JAMB action. No answer, attempt, content row, or preference changed during this check. The board-availability contract and the full application-owned suite passed after the change.
+
+## Fresh generic Tutor availability report
+
+At 03:28 Africa/Lagos, a generic Tutor Direct request for the topic **Temperature** received the controlled `tutor.send` service-unavailable response after the external provider condition. This was not a learner connection problem and did not indicate a new application regression: the request carried the intended student-safe message and correlation ID. Generic Tutor intentionally remains unavailable during provider exhaustion because it has no linked, verified question-bank explanation to use. Linked Practice/Mock Tutor sessions remain the only fallback path by policy.
