@@ -12,7 +12,8 @@ describe("persisted Chemistry availability", () => {
     expect(chemistry).toBeDefined();
 
     const chemistryTopics = filters.topics.filter(topic => topic.subjectId === chemistry?.id);
-    expect(chemistryTopics).toHaveLength(23);
+    expect(chemistryTopics.length).toBeGreaterThanOrEqual(23);
+    expect(chemistryTopics.some(topic => topic.name === "Acids, Bases and Salts")).toBe(true);
 
     const setup = await getPracticeMockSetup();
     const chemistrySetup = setup.subjects.find(subject => subject.id === chemistry?.id);

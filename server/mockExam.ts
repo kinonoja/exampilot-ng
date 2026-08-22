@@ -194,11 +194,13 @@ export async function getPracticeMockSetup() {
     .orderBy(asc(subjects.name));
   return {
     exam: { id: exam.id, name: exam.name },
-    subjects: rows.map(row => ({
-      ...row,
-      originalQuestionCount: Number(row.originalQuestionCount ?? 0),
-      aiQuestionCount: Number(row.aiQuestionCount ?? 0),
-    })),
+    subjects: rows
+      .map(row => ({
+        ...row,
+        originalQuestionCount: Number(row.originalQuestionCount ?? 0),
+        aiQuestionCount: Number(row.aiQuestionCount ?? 0),
+      }))
+      .filter(subject => subject.originalQuestionCount + subject.aiQuestionCount > 0),
     questionCounts: PRACTICE_MOCK_QUESTION_COUNTS,
     durationMinutes: PRACTICE_MOCK_DURATION_MINUTES,
   };

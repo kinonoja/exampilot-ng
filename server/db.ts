@@ -147,9 +147,19 @@ export async function getPracticeFilters() {
   const db = await getDb();
   if (!db) throw new Error("The practice catalogue is currently unavailable.");
   const examRows = await db.select().from(exams).orderBy(asc(exams.name));
-  const subjectRows = await db.select().from(subjects).orderBy(asc(subjects.name));
+  const subjectRows = await db
+    .select({
+      id: subjects.id,
+      examId: subjects.examId,
+      name: subjects.name,
+      questionCount: sql<number>`COUNT(${questions.id})`,
+    })
+    .from(subjects)
+    .leftJoin(questions, eq(questions.subjectId, subjects.id))
+    .groupBy(subjects.id, subjects.examId, subjects.name)
+    .orderBy(asc(subjects.name));
   const topicRows = await db.select().from(topics).orderBy(asc(topics.name));
-  return { exams: examRows, subjects: subjectRows, topics: topicRows };
+  return { exams: examRows, subjects: subjectRows.map(subject => ({ ...subject, questionCount: Number(subject.questionCount ?? 0) })), topics: topicRows };
 }
 
 export async function getRandomPracticeQuestion(filters: PracticeFilters) {

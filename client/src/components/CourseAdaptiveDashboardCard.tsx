@@ -10,7 +10,7 @@ type Course = {
   confidence: "high" | "medium" | "unvalidated";
 };
 
-type Subject = { id: number; examId: number; name: string };
+type Subject = { id: number; examId: number; name: string; questionCount?: number };
 
 export function CourseAdaptiveDashboardCard({
   course,

@@ -5,7 +5,7 @@ describe("original JAMB practice catalogue", () => {
   it("contains fifty authored questions across the three launch subjects", () => {
     expect(jambSeedQuestions).toHaveLength(50);
     expect(jambSeedQuestions.filter(question => question.subject === "Mathematics")).toHaveLength(18);
-    expect(jambSeedQuestions.filter(question => question.subject === "English")).toHaveLength(16);
+    expect(jambSeedQuestions.filter(question => question.subject === "Use of English")).toHaveLength(16);
     expect(jambSeedQuestions.filter(question => question.subject === "Biology")).toHaveLength(16);
   });
 

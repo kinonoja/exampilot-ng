@@ -239,7 +239,12 @@
 - [x] Diagnose the newly reported temporary-unavailability message and repair any application-controlled regression without misrepresenting external capacity
 - [x] Research and reconcile the authoritative current JAMB subject catalogue and syllabus/topic coverage
 - [x] Prepare a source-linked review package and import design for all JAMB subject/topic structures
-- [ ] Obtain explicit approval before importing JAMB subject/topic structures or creating new question content
+- [x] Obtain explicit approval before importing JAMB subject/topic structures or creating new question content
+- [x] Preserve the existing English subject ID while using the approved official “Use of English” label in the JAMB catalogue
+- [x] Transactionally add the 20 missing official JAMB subjects and reconcile approved missing syllabus topics without altering question-linked topics
+- [x] Add truthful syllabus-mapped/no-practice-question states for the 20 new subjects without changing Tutor, Paystack, or existing answer/attempt logic
+- [x] Update course-direction subject matching only where new official subject names are required and verify existing recommendations remain stable
+- [x] Add focused import, availability, and identifier-preservation tests and validate the 25-subject catalogue in the browser
 - [x] Phase 3: Add truthful WAEC-ready structural filters and empty states while keeping held WAEC samples unpersisted and NECO/NABTEB source-gated
 - [x] Phase 4: Improve remaining reliability, test coverage, accessibility, observability, architecture hygiene, and next-agent documentation
 - [x] Produce an Agent Completion Report mapping the issue register to final statuses and changed files

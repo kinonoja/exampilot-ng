@@ -1,7 +1,7 @@
 import type { QuestionOption } from "../drizzle/schema";
 
 export type SeedQuestion = {
-  subject: "Mathematics" | "English" | "Biology";
+  subject: "Mathematics" | "Use of English" | "Biology";
   topic: string;
   difficulty: "easy" | "medium" | "hard";
   questionText: string;
@@ -128,97 +128,97 @@ export const jambSeedQuestions: SeedQuestion[] = [
     explanation: "y = kx. Since 15 = 5k, k = 3. Therefore y = 3 × 8 = 24.", tags: ["variation", "proportion"],
   },
   {
-    subject: "English", topic: "Concord", difficulty: "easy",
+    subject: "Use of English", topic: "Concord", difficulty: "easy",
     questionText: "Choose the correct word: Each of the players ___ a jersey.",
     options: choices(["have", "has", "were having", "are having"]), correctAnswer: "B",
     explanation: "The subject is 'Each', which is singular, so it takes the singular verb 'has'.", tags: ["grammar", "subject-verb agreement"],
   },
   {
-    subject: "English", topic: "Parts of Speech", difficulty: "easy",
+    subject: "Use of English", topic: "Parts of Speech", difficulty: "easy",
     questionText: "In the sentence 'The athlete ran quickly', what part of speech is 'quickly'?",
     options: choices(["Noun", "Verb", "Adjective", "Adverb"]), correctAnswer: "D",
     explanation: "'Quickly' tells us how the athlete ran, so it modifies the verb and is an adverb.", tags: ["grammar", "parts of speech"],
   },
   {
-    subject: "English", topic: "Vocabulary", difficulty: "easy",
+    subject: "Use of English", topic: "Vocabulary", difficulty: "easy",
     questionText: "Which word is closest in meaning to 'diligent'?",
     options: choices(["careless", "hardworking", "noisy", "uncertain"]), correctAnswer: "B",
     explanation: "A diligent person works carefully and persistently; 'hardworking' is the closest meaning.", tags: ["vocabulary", "synonyms"],
   },
   {
-    subject: "English", topic: "Vocabulary", difficulty: "medium",
+    subject: "Use of English", topic: "Vocabulary", difficulty: "medium",
     questionText: "Which word is opposite in meaning to 'scarce'?",
     options: choices(["rare", "limited", "abundant", "small"]), correctAnswer: "C",
     explanation: "'Scarce' means in short supply. 'Abundant' means more than enough or plentiful.", tags: ["vocabulary", "antonyms"],
   },
   {
-    subject: "English", topic: "Nouns", difficulty: "medium",
+    subject: "Use of English", topic: "Nouns", difficulty: "medium",
     questionText: "In the sentence 'The committee has reached its decision', what type of noun is 'committee'?",
     options: choices(["Abstract noun", "Collective noun", "Proper noun", "Material noun"]), correctAnswer: "B",
     explanation: "A committee is a group of people regarded as one unit, so it is a collective noun.", tags: ["grammar", "nouns"],
   },
   {
-    subject: "English", topic: "Punctuation", difficulty: "medium",
+    subject: "Use of English", topic: "Punctuation", difficulty: "medium",
     questionText: "Which sentence is punctuated correctly?",
     options: choices(["After the match the coach said 'We played well'.", "After the match, the coach said, 'We played well.'", "After the match the coach said, We played well.", "After the match, the coach said 'We played well'."]), correctAnswer: "B",
     explanation: "A comma follows the introductory phrase, a comma introduces the direct speech, and the full stop belongs inside the closing quotation mark.", tags: ["writing", "punctuation"],
   },
   {
-    subject: "English", topic: "Tenses", difficulty: "medium",
+    subject: "Use of English", topic: "Tenses", difficulty: "medium",
     questionText: "Choose the best completion: By next June, Ada ___ her internship.",
     options: choices(["completes", "completed", "will have completed", "has completed"]), correctAnswer: "C",
     explanation: "The future perfect tense ('will have completed') describes an action that will be finished before a future time.", tags: ["grammar", "tenses"],
   },
   {
-    subject: "English", topic: "Reported Speech", difficulty: "medium",
+    subject: "Use of English", topic: "Reported Speech", difficulty: "medium",
     questionText: "Musa said, 'I am tired.' Which is the correct reported speech form?",
     options: choices(["Musa said that I am tired.", "Musa said that he was tired.", "Musa says that he is tired.", "Musa said that he has tired."]), correctAnswer: "B",
     explanation: "When the reporting verb is in the past, present 'am' normally shifts to past 'was' and 'I' becomes 'he'.", tags: ["grammar", "reported speech"],
   },
   {
-    subject: "English", topic: "Sentence Analysis", difficulty: "medium",
+    subject: "Use of English", topic: "Sentence Analysis", difficulty: "medium",
     questionText: "In the sentence 'The librarian gave Musa a book', which word is the indirect object?",
     options: choices(["librarian", "gave", "Musa", "book"]), correctAnswer: "C",
     explanation: "The book is the direct object. Musa receives the book, so Musa is the indirect object.", tags: ["grammar", "objects"],
   },
   {
-    subject: "English", topic: "Verb Phrases", difficulty: "medium",
+    subject: "Use of English", topic: "Verb Phrases", difficulty: "medium",
     questionText: "Which group of words is the verb phrase in 'They have been studying since dawn'?",
     options: choices(["They", "have been studying", "since dawn", "studying since"]), correctAnswer: "B",
     explanation: "The auxiliary verbs 'have been' work with the main verb 'studying' to form the verb phrase.", tags: ["grammar", "verb phrases"],
   },
   {
-    subject: "English", topic: "Comparison", difficulty: "easy",
+    subject: "Use of English", topic: "Comparison", difficulty: "easy",
     questionText: "Choose the correct form: This route is ___ than the old one.",
     options: choices(["more careful", "careful", "most careful", "carefuller"]), correctAnswer: "A",
     explanation: "For many two-syllable adjectives such as 'careful', use 'more' to make the comparative form.", tags: ["grammar", "adjectives"],
   },
   {
-    subject: "English", topic: "Articles", difficulty: "easy",
+    subject: "Use of English", topic: "Articles", difficulty: "easy",
     questionText: "Choose the correct article: She is ___ honest student.",
     options: choices(["a", "an", "the", "no article"]), correctAnswer: "B",
     explanation: "'Honest' begins with a vowel sound because the h is silent, so it takes 'an'.", tags: ["grammar", "articles"],
   },
   {
-    subject: "English", topic: "Idioms", difficulty: "medium",
+    subject: "Use of English", topic: "Idioms", difficulty: "medium",
     questionText: "If someone 'hits the nail on the head', the person has:",
     options: choices(["made an exact statement", "become angry", "missed an opportunity", "finished work quickly"]), correctAnswer: "A",
     explanation: "The idiom means saying or doing something exactly right.", tags: ["vocabulary", "idioms"],
   },
   {
-    subject: "English", topic: "Sentence Types", difficulty: "hard",
+    subject: "Use of English", topic: "Sentence Types", difficulty: "hard",
     questionText: "What type of sentence is 'Although it rained, we travelled to Abuja'?",
     options: choices(["Simple sentence", "Compound sentence", "Complex sentence", "Minor sentence"]), correctAnswer: "C",
     explanation: "It contains a main clause and a dependent clause introduced by 'Although', making it complex.", tags: ["grammar", "sentence structure"],
   },
   {
-    subject: "English", topic: "Register", difficulty: "medium",
+    subject: "Use of English", topic: "Register", difficulty: "medium",
     questionText: "Which expression is most suitable in a formal letter?",
     options: choices(["Just wanted to tell you...", "We regret to inform you that...", "Hey, here is the gist...", "You will not believe this..."]), correctAnswer: "B",
     explanation: "Formal letters use respectful, professional language. 'We regret to inform you that...' fits that register.", tags: ["writing", "register"],
   },
   {
-    subject: "English", topic: "Articles", difficulty: "hard",
+    subject: "Use of English", topic: "Articles", difficulty: "hard",
     questionText: "Choose the correct article: He is ___ university student.",
     options: choices(["a", "an", "the", "no article"]), correctAnswer: "A",
     explanation: "'University' begins with the consonant sound /y/ as in 'you', so it takes 'a', not 'an'.", tags: ["grammar", "articles"],
@@ -321,4 +321,4 @@ export const jambSeedQuestions: SeedQuestion[] = [
   },
 ];
 
-export const seedSubjects = ["Mathematics", "English", "Biology"] as const;
+export const seedSubjects = ["Mathematics", "Use of English", "Biology"] as const;

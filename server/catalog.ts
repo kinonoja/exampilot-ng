@@ -19,6 +19,15 @@ export async function ensurePracticeCatalogue(): Promise<void> {
   const [jamb] = await db.select().from(exams).where(eq(exams.name, "JAMB")).limit(1);
   if (!jamb) throw new Error("Unable to initialize the JAMB catalogue.");
 
+  const [legacyEnglish] = await db
+    .select()
+    .from(subjects)
+    .where(and(eq(subjects.examId, jamb.id), eq(subjects.name, "English")))
+    .limit(1);
+  if (legacyEnglish) {
+    await db.update(subjects).set({ name: "Use of English" }).where(eq(subjects.id, legacyEnglish.id));
+  }
+
   for (const name of seedSubjects) {
     await db
       .insert(subjects)

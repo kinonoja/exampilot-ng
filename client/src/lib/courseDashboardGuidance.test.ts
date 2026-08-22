@@ -22,4 +22,28 @@ describe("course dashboard guidance", () => {
     expect(guidance?.availableSubjects).toEqual([]);
     expect(guidance?.commonCombination).toContain("Arts or Social Science");
   });
+
+  it("does not turn syllabus-only subjects into live practice actions", () => {
+    const guidance = getCourseDashboardGuidance(
+      { key: "agriculture", name: "Agriculture", faculty: "Agriculture", commonSubjects: ["Agricultural Science", "Chemistry"], confidence: "high" },
+      [
+        { id: 1, examId: 1, name: "Agriculture Science", questionCount: 0 },
+        { id: 3, examId: 1, name: "Chemistry", questionCount: 48 },
+      ],
+    );
+
+    expect(guidance?.availableSubjects.map(subject => subject.name)).toEqual(["Chemistry"]);
+  });
+
+  it("recognises official catalogue labels when a course dataset uses a verified equivalent", () => {
+    const guidance = getCourseDashboardGuidance(
+      { key: "accounting", name: "Accounting", faculty: "Management", commonSubjects: ["Financial Accounting", "Economics"], confidence: "high" },
+      [
+        { id: 1, examId: 1, name: "Principles of Accounts", questionCount: 0 },
+        { id: 2, examId: 1, name: "Economics", questionCount: 12 },
+      ],
+    );
+
+    expect(guidance?.availableSubjects.map(subject => subject.name)).toEqual(["Economics"]);
+  });
 });

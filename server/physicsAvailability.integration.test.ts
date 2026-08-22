@@ -12,7 +12,8 @@ describe("persisted Physics availability", () => {
     expect(physics).toBeDefined();
 
     const physicsTopics = filters.topics.filter(topic => topic.subjectId === physics?.id);
-    expect(physicsTopics).toHaveLength(34);
+    expect(physicsTopics.length).toBeGreaterThanOrEqual(34);
+    expect(physicsTopics.some(topic => topic.name === "Electrostatics")).toBe(true);
 
     const setup = await getPracticeMockSetup();
     const physicsSetup = setup.subjects.find(subject => subject.id === physics?.id);

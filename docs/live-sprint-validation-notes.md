@@ -69,3 +69,11 @@ The authenticated Practice route now shows a board-coverage selector with JAMB, 
 ## Fresh generic Tutor availability report
 
 At 03:28 Africa/Lagos, a generic Tutor Direct request for the topic **Temperature** received the controlled `tutor.send` service-unavailable response after the external provider condition. This was not a learner connection problem and did not indicate a new application regression: the request carried the intended student-safe message and correlation ID. Generic Tutor intentionally remains unavailable during provider exhaustion because it has no linked, verified question-bank explanation to use. Linked Practice/Mock Tutor sessions remain the only fallback path by policy.
+
+## JAMB catalogue rollout — preview follow-up
+
+The approved transactional import reported 25 JAMB subjects, 702 topic rows, and preservation of **Use of English** at subject ID 2. The initial screenshot capture showed only the local loading skeleton, so it was not treated as visual evidence. A subsequent authenticated browser check completed the catalogue request and rendered all 25 entries in the JAMB selector: the five live-question subjects were unmarked, while each zero-question subject was labelled **“— syllabus mapped.”** The selector displayed **Use of English** rather than the previous English label. Automated import, availability, and identifier-preservation tests also pass.
+
+The authenticated learner session then selected **Agriculture Science — syllabus mapped**. Its complete imported topic list rendered in the topic selector, and the page displayed: **“Syllabus mapped — practice questions coming.”** The supporting copy clearly explained that the official topic structure is browseable but original ExamPilot practice questions are not yet added and that no empty session will start. No answer or question-generation action was initiated.
+
+The authenticated Practice Mock setup loaded after the import with exactly the five subjects that currently have questions: Biology, Chemistry, Mathematics, Physics, and Use of English. No syllabus-only subject, including Agriculture Science, was selectable. This confirms that importing the 20 additional subjects did not create empty Mock choices or alter the existing subject-bank boundary. No mock start action was used.
