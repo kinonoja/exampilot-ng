@@ -269,7 +269,7 @@
 - [x] Add focused regression coverage and provide evidence-backed results for the syllabus-only state audit
 - [x] Restrict the dashboard topic-generation selector to topics belonging to subjects with an existing question bank
 - [x] Align dashboard launch copy with all five live subjects and the official Use of English label
-- [ ] Inspect existing GitHub remotes, deployment configuration, and database connectivity architecture for the requested Vercel preparation
-- [ ] Create or reuse a private GitHub repository and push the current verified project source
-- [ ] Produce a deployment-safe Vercel environment-variable inventory without exposing secret values
-- [ ] Confirm whether the current database is externally reachable or must be migrated before Vercel deployment
+- [x] Inspect existing GitHub remotes, deployment configuration, and database connectivity architecture for the requested Vercel preparation
+- [x] Create or reuse a private GitHub repository and push the current verified project source
+- [x] Produce a deployment-safe Vercel environment-variable inventory without exposing secret values
+- [x] Confirm whether the current database is externally reachable or must be migrated before Vercel deployment
