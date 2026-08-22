@@ -61,3 +61,7 @@ The authenticated dashboard now reads the saved Course Direction rather than sta
 Selecting **Practice Biology** opened `/practice?subjectId=3`, set the live Practice filters to JAMB and Biology, and loaded a Biology question. No answer was selected or submitted. This verifies that the course-adaptive dashboard changes the recommended focus when the saved course changes while leaving the learner in control of whether to practise it.
 
 The course-guidance model is covered with two regression cases: it recalculates the available current-bank subjects when the saved course changes, and it retains the university-confirmation framing for a course with no current-bank match. The new subject-link parser is also covered. Full application-owned regression: 31 files / 80 tests pass; TypeScript passes.
+
+## Truthful future-board Practice coverage
+
+The authenticated Practice route now shows a board-coverage selector with JAMB, WAEC, NECO, and NABTEB. JAMB remained the only live filterable catalogue. Selecting WAEC showed **WAEC practice is coming soon**, stated that reviewed samples are held for explicit human approval, and rendered **No questions are loaded or saved for this board** with a return-to-JAMB action. No answer, attempt, content row, or preference changed during this check. The board-availability contract and the full application-owned suite passed after the change.

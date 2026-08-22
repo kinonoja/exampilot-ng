@@ -10,6 +10,9 @@
     "check": "tsc --noEmit",
     "format": "prettier --write .",
     "test": "vitest run",
+    "test:app": "vitest run --exclude server/paystack.credentials.test.ts",
+    "test:external:paystack": "vitest run server/paystack.credentials.test.ts",
+    "validate": "pnpm test:app && pnpm check",
     "db:push": "drizzle-kit generate && drizzle-kit migrate"
   },
   "dependencies": {

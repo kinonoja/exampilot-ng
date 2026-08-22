@@ -14,7 +14,7 @@ export function UpgradePrompt({
   compact = false,
   eyebrow = "Daily practice complete",
   title = "You have used today’s 5 Free questions.",
-  description = "Keep your momentum with unlimited practice, full mock exams, tailored explanations, and a weekly study plan in Pro.",
+  description = "Keep your momentum with unlimited JAMB practice, short Practice Mock access, saved results, and Tutor support when the learning service is available in Pro.",
   ctaLabel = "Unlock Pro for ₦1,500/month",
 }: UpgradePromptProps) {
   const [, setLocation] = useLocation();

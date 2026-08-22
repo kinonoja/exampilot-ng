@@ -2,7 +2,9 @@ import { useEffect, useMemo, useState } from "react";
 import { BookOpenCheck, BrainCircuit, CheckCircle2, ChevronRight, CircleAlert, Clock3, Compass, RotateCcw, XCircle } from "lucide-react";
 import { useLocation, useSearch } from "wouter";
 import { Button } from "@/components/ui/button";
+import { ExamBoardCoverageSelector, FutureExamBoardEmptyState } from "@/components/ExamBoardCoverageSelector";
 import { UpgradePrompt } from "@/components/UpgradePrompt";
+import { type ExamBoard } from "@/lib/examBoardAvailability";
 import { trpc } from "@/lib/trpc";
 import { subjectIdFromSearch, topicIdFromSearch } from "@/lib/practiceRoute";
 import { getStudentFacingError } from "@/lib/studentErrorMessage";
@@ -17,6 +19,7 @@ export default function PremiumPractice() {
   const [subjectId, setSubjectId] = useState<number>();
   const [topicId, setTopicId] = useState<number>();
   const [difficulty, setDifficulty] = useState<Difficulty | undefined>();
+  const [activeBoard, setActiveBoard] = useState<ExamBoard>("JAMB");
   const [servedIds, setServedIds] = useState<number[]>([]);
   const [selectedAnswer, setSelectedAnswer] = useState("");
   const [feedback, setFeedback] = useState<{ isCorrect: boolean; correctAnswer: string; explanation: string } | null>(null);
@@ -31,7 +34,7 @@ export default function PremiumPractice() {
   const subjects = useMemo(() => (catalogueQuery.data?.subjects ?? []).filter(subject => subject.examId === examId), [catalogueQuery.data, examId]);
   const topics = useMemo(() => (catalogueQuery.data?.topics ?? []).filter(topic => topic.subjectId === subjectId), [catalogueQuery.data, subjectId]);
   const queryInput = useMemo(() => ({ examId: examId ?? 0, subjectId, topicId, difficulty, previousQuestionIds: servedIds }), [examId, subjectId, topicId, difficulty, servedIds]);
-  const questionQuery = trpc.practice.next.useQuery(queryInput, { enabled: Boolean(examId), refetchOnWindowFocus: false });
+  const questionQuery = trpc.practice.next.useQuery(queryInput, { enabled: activeBoard === "JAMB" && Boolean(examId), refetchOnWindowFocus: false });
   const submitAttempt = trpc.practice.submit.useMutation();
   const question = questionQuery.data?.question;
   const limitReached = questionQuery.data?.limitReached || accessQuery.data?.canPractice === false;
@@ -41,7 +44,10 @@ export default function PremiumPractice() {
 
   if (catalogueQuery.isLoading || !examId) return <div className="h-80 animate-pulse rounded-3xl bg-[#E6EDF2]" />;
   const filters = "mt-1.5 h-11 w-full rounded-xl border border-[#C8D6E1] bg-white px-3 text-sm font-semibold text-[#162235] outline-none focus:ring-2 focus:ring-[#245EA8] disabled:cursor-not-allowed disabled:bg-[#EEF3F6]";
-  return <div className="mx-auto w-full max-w-5xl space-y-5 pb-12"><header className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end"><div><p className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.14em] text-[#245EA8]"><Compass className="h-4 w-4" strokeWidth={1.8} /> Practice focus</p><h1 className="mt-2 font-display text-3xl font-bold tracking-[-0.045em] text-[#163A5F]">One question. One clearer decision.</h1><p className="mt-2 max-w-xl text-sm leading-6 text-[#607082]">Choose a focus, then move at a pace that helps the explanation stay with you.</p></div><span className="inline-flex w-fit items-center gap-2 rounded-full border border-[#C8D6E1] bg-white px-3 py-1.5 text-xs font-bold text-[#46586B]"><BookOpenCheck className="h-4 w-4 text-[#245EA8]" strokeWidth={1.8} /> {accessQuery.data?.isPro ? "Practice open" : `${accessQuery.data?.dailyAttemptCount ?? 0} of 5 Free questions`}</span></header>
+  const changeBoard = (board: ExamBoard) => { setActiveBoard(board); setSubjectId(undefined); setTopicId(undefined); setDifficulty(undefined); setServedIds([]); };
+  const practiceHeader = <header className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end"><div><p className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.14em] text-[#245EA8]"><Compass className="h-4 w-4" strokeWidth={1.8} /> Practice focus</p><h1 className="mt-2 font-display text-3xl font-bold tracking-[-0.045em] text-[#163A5F]">One question. One clearer decision.</h1><p className="mt-2 max-w-xl text-sm leading-6 text-[#607082]">Choose a focus, then move at a pace that helps the explanation stay with you.</p></div><span className="inline-flex w-fit items-center gap-2 rounded-full border border-[#C8D6E1] bg-white px-3 py-1.5 text-xs font-bold text-[#46586B]"><BookOpenCheck className="h-4 w-4 text-[#245EA8]" strokeWidth={1.8} /> {accessQuery.data?.isPro ? "Practice open" : `${accessQuery.data?.dailyAttemptCount ?? 0} of 5 Free questions`}</span></header>;
+  if (activeBoard !== "JAMB") return <div className="mx-auto w-full max-w-5xl space-y-5 pb-12">{practiceHeader}<ExamBoardCoverageSelector activeBoard={activeBoard} onBoardChange={changeBoard} /><FutureExamBoardEmptyState board={activeBoard} onReturnToJamb={() => changeBoard("JAMB")} /></div>;
+  return <div className="mx-auto w-full max-w-5xl space-y-5 pb-12">{practiceHeader}<ExamBoardCoverageSelector activeBoard={activeBoard} onBoardChange={changeBoard} />
     <section className="grid gap-3 rounded-2xl border border-[#DDE5EA] bg-white p-4 sm:grid-cols-4"><label className="text-[11px] font-bold uppercase tracking-[0.11em] text-[#607082]">Exam<select value={examId} onChange={event => { setExamId(Number(event.target.value)); setSubjectId(undefined); setTopicId(undefined); setServedIds([]); }} className={filters}>{catalogueQuery.data?.exams.map(exam => <option key={exam.id} value={exam.id}>{exam.name}</option>)}</select></label><label className="text-[11px] font-bold uppercase tracking-[0.11em] text-[#607082]">Subject<select value={subjectId ?? "all"} onChange={event => { setSubjectId(event.target.value === "all" ? undefined : Number(event.target.value)); setTopicId(undefined); setServedIds([]); }} className={filters}><option value="all">All subjects</option>{subjects.map(subject => <option key={subject.id} value={subject.id}>{subject.name}</option>)}</select></label><label className="text-[11px] font-bold uppercase tracking-[0.11em] text-[#607082]">Topic<select disabled={!subjectId} value={topicId ?? "all"} onChange={event => { setTopicId(event.target.value === "all" ? undefined : Number(event.target.value)); setServedIds([]); }} className={filters}><option value="all">All topics</option>{topics.map(topic => <option key={topic.id} value={topic.id}>{topic.name}</option>)}</select></label><label className="text-[11px] font-bold uppercase tracking-[0.11em] text-[#607082]">Level<select value={difficulty ?? "all"} onChange={event => { setDifficulty(event.target.value === "all" ? undefined : event.target.value as Difficulty); setServedIds([]); }} className={filters}><option value="all">Mixed difficulty</option><option value="easy">Easy</option><option value="medium">Medium</option><option value="hard">Hard</option></select></label></section>
     {limitReached ? <UpgradePrompt /> : null}
     {!limitReached && questionQuery.isLoading ? <div className="h-96 animate-pulse rounded-3xl bg-[#E6EDF2]" /> : null}

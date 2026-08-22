@@ -9,6 +9,7 @@ import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
 import { handlePaystackWebhook, isValidPaystackSignature } from "../paystack";
+import { createCriticalFlowLog } from "../observability";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -57,6 +58,17 @@ async function startServer() {
   registerStorageProxy(app);
   registerOAuthRoutes(app);
   // tRPC API
+  app.use("/api/trpc", (req, res, next) => {
+    const requestId = crypto.randomUUID();
+    const startedAt = performance.now();
+    res.locals.examPilotRequestId = requestId;
+    res.setHeader("X-Request-ID", requestId);
+    res.once("finish", () => {
+      const event = createCriticalFlowLog({ requestId, pathname: req.path, statusCode: res.statusCode, durationMs: performance.now() - startedAt });
+      if (event) console.info(JSON.stringify(event));
+    });
+    next();
+  });
   app.use(
     "/api/trpc",
     createExpressMiddleware({
