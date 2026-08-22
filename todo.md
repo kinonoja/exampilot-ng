@@ -252,3 +252,7 @@
 - [x] Reconcile the reported raw upstream 412 Priority 1 defect against the current learner-facing availability boundary
 - [x] Reassess the full error audit for any unresolved Critical defect excluding the explicitly deferred payment UI-evidence task
 - [x] Apply and validate only any Priority 1 correction still required after evidence reconciliation
+- [x] Capture authenticated, non-mutating Practice evidence that one Chemistry question is rendered answer-ready from the approved 48-question bank
+- [x] Capture authenticated, non-mutating Practice evidence that one Physics question is rendered answer-ready from the approved 48-question bank
+- [x] Capture authenticated Mock setup evidence that Chemistry and Physics remain selectable within the three-subject contract
+- [x] Deliver an evidence-backed Priority 2 walkthrough without creating attempts or Mock sessions
