@@ -77,3 +77,9 @@ The approved transactional import reported 25 JAMB subjects, 702 topic rows, and
 The authenticated learner session then selected **Agriculture Science — syllabus mapped**. Its complete imported topic list rendered in the topic selector, and the page displayed: **“Syllabus mapped — practice questions coming.”** The supporting copy clearly explained that the official topic structure is browseable but original ExamPilot practice questions are not yet added and that no empty session will start. No answer or question-generation action was initiated.
 
 The authenticated Practice Mock setup loaded after the import with exactly the five subjects that currently have questions: Biology, Chemistry, Mathematics, Physics, and Use of English. No syllabus-only subject, including Agriculture Science, was selectable. This confirms that importing the 20 additional subjects did not create empty Mock choices or alter the existing subject-bank boundary. No mock start action was used.
+
+## Tuesday Sprint Priority 1 reconciliation
+
+The reported Mock `subjectIds` defect is historical, not current: the shared `PRACTICE_MOCK_MAX_SUBJECTS` constant is **3**, the protected `mock.start` schema rejects the former five-subject payload, and authenticated Mock setup renders **Choose up to 3** with exactly three default selections. The focused input regression passed.
+
+The reported raw upstream `412` defect is also historical, not current: the server classifies the observed usage-exhausted/precondition failure and returns `SERVICE_UNAVAILABLE` with **“This feature is temporarily unavailable, please try again later.”** Focused server and student-message regressions passed. The full error audit contains no unresolved Critical application defect after excluding the explicitly deferred authenticated-decline and staged-live payment evidence; external AI capacity remains an availability blocker, not a raw-error or connection-message regression.

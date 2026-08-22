@@ -248,3 +248,7 @@
 - [x] Phase 3: Add truthful WAEC-ready structural filters and empty states while keeping held WAEC samples unpersisted and NECO/NABTEB source-gated
 - [x] Phase 4: Improve remaining reliability, test coverage, accessibility, observability, architecture hygiene, and next-agent documentation
 - [x] Produce an Agent Completion Report mapping the issue register to final statuses and changed files
+- [x] Reconcile the reported Mock `subjectIds` Priority 1 defect against the current server contract and browser evidence
+- [x] Reconcile the reported raw upstream 412 Priority 1 defect against the current learner-facing availability boundary
+- [x] Reassess the full error audit for any unresolved Critical defect excluding the explicitly deferred payment UI-evidence task
+- [x] Apply and validate only any Priority 1 correction still required after evidence reconciliation
