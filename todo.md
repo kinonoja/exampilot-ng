@@ -263,3 +263,9 @@
 - [x] Verify the authenticated billing page and checkout entry UI without initiating payment or changing webhook logic
 - [x] Verify the course onboarding flow loads with saved-direction controls and institution-honest wording without changing learner preferences
 - [x] Run the full application-owned quality gate and report Priority 3 evidence for each requested area
+- [x] Audit every student-facing subject selector, chip, recommendation, and course-guidance path for syllabus-only JAMB subjects
+- [x] Verify syllabus-only subjects are labelled or excluded appropriately in Practice, Mock setup, dashboard/course guidance, and subject-linked routes
+- [x] Correct any discovered subject path that can present a syllabus-only subject as a broken or empty live-practice action
+- [x] Add focused regression coverage and provide evidence-backed results for the syllabus-only state audit
+- [x] Restrict the dashboard topic-generation selector to topics belonging to subjects with an existing question bank
+- [x] Align dashboard launch copy with all five live subjects and the official Use of English label
