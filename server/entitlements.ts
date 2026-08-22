@@ -39,9 +39,10 @@ export function getTutorEntitlement(
 }
 
 export function getPracticeMockEntitlement(
-  subscriptionStatus: EntitlementInput["subscriptionStatus"],
+  input: Pick<EntitlementInput, "subscriptionStatus" | "subscriptionExpiresAt">,
+  now = new Date(),
 ) {
-  const isPro = subscriptionStatus === "pro";
+  const isPro = hasActivePaidAccess(input.subscriptionStatus, input.subscriptionExpiresAt, now);
   return {
     isPro,
     canStartMock: isPro,

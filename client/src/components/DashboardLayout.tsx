@@ -1,6 +1,6 @@
 import { useAuth } from "@/_core/hooks/useAuth";
 import { startLogin } from "@/const";
-import { BookOpenCheck, CreditCard, GraduationCap, History, LayoutDashboard, LogOut, MessageCircleQuestion, PanelLeft, TimerReset } from "lucide-react";
+import { BookOpenCheck, CircleAlert, CreditCard, GraduationCap, History, LayoutDashboard, LogOut, MessageCircleQuestion, PanelLeft, TimerReset } from "lucide-react";
 import { useLocation } from "wouter";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -19,8 +19,9 @@ const menuItems = [
 ];
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const { loading, user } = useAuth();
+  const { loading, user, error, refresh } = useAuth();
   if (loading) return <DashboardLayoutSkeleton />;
+  if (error) return <div className="grid min-h-screen place-items-center bg-[#F4F7F8] p-6"><section className="max-w-md rounded-3xl border border-[#E8C8C5] bg-white p-6 text-center shadow-sm"><CircleAlert className="mx-auto h-8 w-8 text-[#B5473A]" strokeWidth={1.8} /><h1 className="mt-4 font-display text-2xl font-bold text-[#163A5F]">We could not open your study space.</h1><p className="mt-2 text-sm leading-6 text-[#607082]">Your account has not been changed. Please check your connection and try again.</p><Button onClick={() => refresh()} className="mt-6 h-11 rounded-xl bg-[#245EA8] text-white hover:bg-[#1D4F8F]">Try again</Button></section></div>;
   if (!user) return <div className="grid min-h-screen place-items-center bg-[#F4F7F8] p-6"><div className="max-w-sm text-center"><ExamMark /><h1 className="mt-8 font-display text-3xl font-bold tracking-tight text-[#163A5F]">Your study space is waiting.</h1><p className="mt-3 text-sm leading-6 text-[#607082]">Sign in to keep your practice, study target, and billing access in one place.</p><Button onClick={() => startLogin()} className="mt-6 h-11 w-full rounded-xl bg-[#245EA8] text-white hover:bg-[#1D4F8F]">Sign in to ExamPilot</Button></div></div>;
   return <SidebarProvider><StudentShell>{children}</StudentShell></SidebarProvider>;
 }

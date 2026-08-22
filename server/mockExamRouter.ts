@@ -1,6 +1,7 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { protectedProcedure, router } from "./_core/trpc";
+import { PRACTICE_MOCK_MAX_SUBJECTS } from "../shared/const";
 import { ensurePracticeCatalogue } from "./catalog";
 import {
   PRACTICE_MOCK_DURATION_MINUTES,
@@ -20,9 +21,9 @@ import {
 } from "./mockExam";
 
 const mockIdInput = z.object({ mockExamId: z.number().int().positive() });
-const startInput = z.object({
+export const practiceMockStartInput = z.object({
   examId: z.number().int().positive(),
-  subjectIds: z.array(z.number().int().positive()).min(1).max(3),
+  subjectIds: z.array(z.number().int().positive()).min(1).max(PRACTICE_MOCK_MAX_SUBJECTS),
   questionCount: z.union(PRACTICE_MOCK_QUESTION_COUNTS.map(value => z.literal(value)) as [z.ZodLiteral<5>, z.ZodLiteral<10>, z.ZodLiteral<15>]),
   durationMinutes: z.union(PRACTICE_MOCK_DURATION_MINUTES.map(value => z.literal(value)) as [z.ZodLiteral<5>, z.ZodLiteral<10>, z.ZodLiteral<15>]),
   includeAIGenerated: z.boolean().default(false),
@@ -42,7 +43,7 @@ export const mockExamRouter = router({
     await ensurePracticeCatalogue();
     return getPracticeMockSetup();
   }),
-  start: protectedProcedure.input(startInput).mutation(async ({ ctx, input }) => {
+  start: protectedProcedure.input(practiceMockStartInput).mutation(async ({ ctx, input }) => {
     await ensurePracticeCatalogue();
     assertCanStartPracticeMock(await getMockEntitlement(ctx.user.id));
     return startPracticeMock(ctx.user.id, input);

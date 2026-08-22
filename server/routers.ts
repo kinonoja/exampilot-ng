@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { TRPCError } from "@trpc/server";
 import { ensurePracticeCatalogue } from "./catalog";
 import { getBillingOverview } from "./billing";
 import {
@@ -37,6 +38,22 @@ const coursePreferenceInput = z.discriminatedUnion("institutionPlanningStatus", 
     targetInstitutionName: z.string().trim().min(2).max(255),
   }),
 ]);
+
+export function isExhaustedLLMError(error: unknown) {
+  const message = error instanceof Error ? error.message : String(error ?? "");
+  return /usage exhausted|precondition failed|llm invoke failed/i.test(message);
+}
+
+async function withLLMAvailabilityBoundary<T>(work: () => Promise<T>, feature: "Tutor" | "Question generation") {
+  try {
+    return await work();
+  } catch (error) {
+    if (isExhaustedLLMError(error)) {
+      throw new TRPCError({ code: "SERVICE_UNAVAILABLE", message: `${feature} is temporarily unavailable. Please try again later.` });
+    }
+    throw error;
+  }
+}
 
 async function getPracticeAccess(userId: number) {
   const [profile, dailyAttemptCount] = await Promise.all([
@@ -146,7 +163,7 @@ export const appRouter = router({
       }),
     generate: protectedProcedure
       .input(z.object({ topicId: z.number().int().positive(), count: z.number().int().min(3).max(5).default(3) }))
-      .mutation((opts) => generateTopicPracticeQuestions(opts.input)),
+      .mutation((opts) => withLLMAvailabilityBoundary(() => generateTopicPracticeQuestions(opts.input), "Question generation")),
   }),
   mock: mockExamRouter,
   billing: router({
@@ -160,10 +177,10 @@ export const appRouter = router({
   tutor: router({
     start: protectedProcedure
       .input(z.object({ topic: z.string().trim().min(2).max(255).optional(), questionId: z.number().int().positive().optional() }))
-      .mutation(({ ctx, input }) => startTutorConversation(ctx.user.id, input)),
+      .mutation(({ ctx, input }) => withLLMAvailabilityBoundary(() => startTutorConversation(ctx.user.id, input), "Tutor")),
     send: protectedProcedure
       .input(z.object({ conversationId: z.number().int().positive(), message: z.string().trim().min(1).max(2000), questionId: z.number().int().positive().optional() }))
-      .mutation(({ ctx, input }) => sendTutorMessage(ctx.user.id, input)),
+      .mutation(({ ctx, input }) => withLLMAvailabilityBoundary(() => sendTutorMessage(ctx.user.id, input), "Tutor")),
   }),
 });
 

@@ -207,7 +207,7 @@ export async function getPracticeMockSetup() {
 export async function getMockEntitlement(userId: number) {
   const profile = await getStudentProfile(userId);
   if (!profile) throw new Error("Your student profile could not be found.");
-  return getPracticeMockEntitlement(profile.subscriptionStatus);
+  return getPracticeMockEntitlement({ subscriptionStatus: profile.subscriptionStatus, subscriptionExpiresAt: profile.subscriptionExpiresAt });
 }
 
 export async function startPracticeMock(userId: number, input: StartPracticeMockInput) {

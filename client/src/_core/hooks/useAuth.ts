@@ -1,5 +1,6 @@
 import { startLogin } from "@/const";
 import { trpc } from "@/lib/trpc";
+import { isRetryableTransportError } from "@/lib/studentErrorMessage";
 import { TRPCClientError } from "@trpc/client";
 import { useCallback, useEffect, useMemo } from "react";
 
@@ -17,7 +18,8 @@ export function useAuth(options?: UseAuthOptions) {
   const utils = trpc.useUtils();
 
   const meQuery = trpc.auth.me.useQuery(undefined, {
-    retry: false,
+    retry: (failureCount, error) => isRetryableTransportError(error) && failureCount < 2,
+    retryDelay: attempt => Math.min(500 * (attempt + 1), 1_500),
     refetchOnWindowFocus: false,
   });
 

@@ -165,6 +165,10 @@
 - [x] Confirm a declined Test Mode payment keeps the isolated learner on Free with no subscription or entitlement; rendered in-app error remains explicitly unverified under the isolated OAuth-session limitation
 - [x] Stop after the bounded isolated in-app decline attempt: the exact isolated learner cannot enter the authenticated ExamPilot billing route without a separate real OAuth login, so no misleading UI-verification claim was made
 - [x] Deliver the requested evidence-backed Paystack verification report before marking the payment work complete
+- [x] Run and document a read-only full application error audit across automated tests, major flows, failure messages, TypeScript, and browser console logs
+- [x] Report all audit findings by severity with evidence and proposed fixes, without implementing any audit findings before user triage
+- [x] Reproduce and diagnose the authenticated `/dashboard` tRPC `Failed to fetch` error reported at 2026-08-21T23:15:41.797 Africa/Lagos
+- [x] Apply and verify a minimal dashboard fetch fix only after root-cause evidence is collected
 - [x] Supersede the paused-generation path after user-authorized original Claude batches passed review and were explicitly approved for persistence
 - [x] Confirm the restored LLM generation path with a small structured JAMB batch probe before any full request (the service remains usage-exhausted)
 - [x] Present the complete JAMB Chemistry/Physics validation and distribution summaries for final spot-check before persistence
@@ -205,3 +209,11 @@
 - [x] Separate confirmed official/free source evidence from unverified or restricted material and state the practical research limits
 - [x] Propose the first two or three source-supported WAEC and NECO subjects for originally written practice content
 - [x] Present the WAEC/NECO source report for approval before generating any WAEC or NECO questions
+- [x] Repair dashboard auth transport failures with retry and a distinct retryable connection-error state
+- [x] Limit Practice Mock setup to the server-supported maximum of three subjects and replace raw schema feedback with clear setup guidance
+- [x] Make Practice Mock Pro entitlement expire-aware, consistent with Practice and Tutor access
+- [x] Translate exhausted LLM generation and Tutor availability errors into clear student-facing unavailable states
+- [x] Render retryable errors for failed Practice answer saves, Mock position/save/submit operations, and billing cancellation
+- [x] Remove internal stack traces from the production error boundary while retaining safe recovery guidance
+- [x] Add focused regression tests for every repaired audit defect and re-run live audited flows without mutating study or payment data
+- [x] Assess the platform-managed development debug collector’s bearer-header logging; document the sandbox-local exposure without modifying platform instrumentation

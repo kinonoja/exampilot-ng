@@ -22,10 +22,12 @@ describe("practice entitlements", () => {
     expect(access.canPractice).toBe(false);
   });
 
-  it("reserves saved Practice Mocks for an active Pro subscription state", () => {
-    expect(getPracticeMockEntitlement("pro")).toMatchObject({ isPro: true, canStartMock: true });
-    expect(getPracticeMockEntitlement("free")).toMatchObject({ isPro: false, canStartMock: false });
-    expect(getPracticeMockEntitlement("past_due")).toMatchObject({ isPro: false, canStartMock: false });
-    expect(getPracticeMockEntitlement("cancelled")).toMatchObject({ isPro: false, canStartMock: false });
+  it("reserves saved Practice Mocks for unexpired paid access only", () => {
+    const activeExpiry = new Date("2026-08-20T12:00:00.000Z");
+    const expired = new Date("2026-08-18T12:00:00.000Z");
+    expect(getPracticeMockEntitlement({ subscriptionStatus: "pro", subscriptionExpiresAt: activeExpiry }, now)).toMatchObject({ isPro: true, canStartMock: true });
+    expect(getPracticeMockEntitlement({ subscriptionStatus: "pro", subscriptionExpiresAt: expired }, now)).toMatchObject({ isPro: false, canStartMock: false });
+    expect(getPracticeMockEntitlement({ subscriptionStatus: "free", subscriptionExpiresAt: null }, now)).toMatchObject({ isPro: false, canStartMock: false });
+    expect(getPracticeMockEntitlement({ subscriptionStatus: "past_due", subscriptionExpiresAt: activeExpiry }, now)).toMatchObject({ isPro: true, canStartMock: true });
   });
 });
