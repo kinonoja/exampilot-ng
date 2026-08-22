@@ -217,3 +217,6 @@
 - [x] Remove internal stack traces from the production error boundary while retaining safe recovery guidance
 - [x] Add focused regression tests for every repaired audit defect and re-run live audited flows without mutating study or payment data
 - [x] Assess the platform-managed development debug collector’s bearer-header logging; document the sandbox-local exposure without modifying platform instrumentation
+- [x] Diagnose the reported dashboard Question Generation unavailability at 2026-08-22T00:50:01 Africa/Lagos and distinguish application behavior from external service capacity
+- [x] Apply and verify a safe Question Generation repair only if the observed unavailability is application-controlled
+- [x] Complete the uploaded Priority 2 and Priority 3 visibility/regression evidence without mutating protected learner or payment data

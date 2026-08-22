@@ -9,8 +9,8 @@ describe("student error messages", () => {
   });
 
   it("translates exhausted LLM capacity into a safe student message", () => {
-    expect(getAssistantAvailabilityMessage(new Error("LLM invoke failed: 412 Precondition Failed – usage exhausted"), "Tutor")).toContain("temporarily unavailable");
-    expect(getAssistantAvailabilityMessage(new Error("usage exhausted"), "Question generation")).not.toContain("412");
+    expect(getAssistantAvailabilityMessage(new Error("LLM invoke failed: 412 Precondition Failed – usage exhausted"), "Tutor")).toBe("This feature is temporarily unavailable, please try again later.");
+    expect(getAssistantAvailabilityMessage(new Error("usage exhausted"), "Question generation")).toBe("This feature is temporarily unavailable, please try again later.");
   });
 
   it("keeps a direct server message only when it is not a transport failure", () => {

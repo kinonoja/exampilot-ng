@@ -49,7 +49,7 @@ async function withLLMAvailabilityBoundary<T>(work: () => Promise<T>, feature: "
     return await work();
   } catch (error) {
     if (isExhaustedLLMError(error)) {
-      throw new TRPCError({ code: "SERVICE_UNAVAILABLE", message: `${feature} is temporarily unavailable. Please try again later.` });
+      throw new TRPCError({ code: "SERVICE_UNAVAILABLE", message: "This feature is temporarily unavailable, please try again later." });
     }
     throw error;
   }
