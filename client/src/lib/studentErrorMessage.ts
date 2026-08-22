@@ -19,7 +19,7 @@ export function getStudentFacingError(error: unknown, fallback: string) {
 
 export function getAssistantAvailabilityMessage(error: unknown, assistantName: "Tutor" | "Question generation") {
   const message = error instanceof Error ? error.message : String(error ?? "");
-  if (/usage exhausted|precondition failed|llm invoke failed/i.test(message)) {
+  if (message === TEMPORARY_ASSISTANT_UNAVAILABLE_MESSAGE || /usage exhausted|precondition failed|llm invoke failed/i.test(message)) {
     return TEMPORARY_ASSISTANT_UNAVAILABLE_MESSAGE;
   }
   return getStudentFacingError(error, `${assistantName} is temporarily unavailable. Please try again later.`);

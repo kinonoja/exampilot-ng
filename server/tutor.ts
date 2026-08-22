@@ -7,6 +7,16 @@ import { INITIAL_MODE_MESSAGE, TUTOR_SYSTEM_PROMPT } from "./tutorPrompt";
 
 export type TutorMode = "direct" | "guided";
 export type TutorMessage = { role: "user" | "assistant"; content: string; createdAt: string };
+type TutorQuestionContext = {
+  questionText: string;
+  options: { key: string; text: string }[];
+  correctAnswer: string;
+  explanation: string;
+  subject: string;
+  topic: string;
+  selectedAnswer: string | null;
+  attemptWasCorrect: boolean | null;
+};
 
 const TUTOR_MODEL = "claude-haiku-4-5";
 const INPUT_COST_MICROUSD_PER_TOKEN = 1;
@@ -52,6 +62,24 @@ function textFromCompletion(content: unknown) {
     .map(part => part.text)
     .join("\n")
     .trim();
+}
+
+function isTemporaryLLMAvailabilityError(error: unknown) {
+  const message = error instanceof Error ? error.message : String(error ?? "");
+  return /usage exhausted|precondition failed|llm invoke failed/i.test(message);
+}
+
+export function getQuestionContextFallback(mode: TutorMode, questionContext: TutorQuestionContext) {
+  const correctOption = questionContext.options.find(option => option.key === questionContext.correctAnswer);
+  const correctAnswer = correctOption
+    ? `${correctOption.key}. ${correctOption.text}`
+    : questionContext.correctAnswer;
+
+  if (mode === "direct") {
+    return `The correct answer is ${correctAnswer}. ${questionContext.explanation}`;
+  }
+
+  return `Let’s work from the key idea: ${questionContext.explanation} Now compare that idea with the options in the question. Which option best matches it?`;
 }
 
 async function getDailyTutorRequestCount(userId: number) {
@@ -171,19 +199,24 @@ export async function sendTutorMessage(userId: number, input: { conversationId: 
       note: detectedMode && detectedMode !== conversation.mode ? `The student has just switched to ${mode.toUpperCase()} mode. Continue using that mode now.` : undefined,
     };
     const recentMessages = [...history, userMessage].slice(-12).map(message => ({ role: message.role, content: message.content }));
-    const response = await invokeLLM({
-      model: TUTOR_MODEL,
-      max_tokens: 420,
-      messages: [
-        { role: "system", content: TUTOR_SYSTEM_PROMPT },
-        { role: "system", content: `SESSION CONTEXT\n${JSON.stringify(sessionContext)}` },
-        ...recentMessages,
-      ],
-    });
-    assistantContent = textFromCompletion(response.choices[0]?.message.content ?? "") || "I’m sorry, I could not prepare that explanation. Please try again.";
-    const inputTokens = response.usage?.prompt_tokens ?? 0;
-    const outputTokens = response.usage?.completion_tokens ?? 0;
-    usage = { inputTokens, outputTokens, estimatedCostMicrousd: inputTokens * INPUT_COST_MICROUSD_PER_TOKEN + outputTokens * OUTPUT_COST_MICROUSD_PER_TOKEN };
+    try {
+      const response = await invokeLLM({
+        model: TUTOR_MODEL,
+        max_tokens: 420,
+        messages: [
+          { role: "system", content: TUTOR_SYSTEM_PROMPT },
+          { role: "system", content: `SESSION CONTEXT\n${JSON.stringify(sessionContext)}` },
+          ...recentMessages,
+        ],
+      });
+      assistantContent = textFromCompletion(response.choices[0]?.message.content ?? "") || "I’m sorry, I could not prepare that explanation. Please try again.";
+      const inputTokens = response.usage?.prompt_tokens ?? 0;
+      const outputTokens = response.usage?.completion_tokens ?? 0;
+      usage = { inputTokens, outputTokens, estimatedCostMicrousd: inputTokens * INPUT_COST_MICROUSD_PER_TOKEN + outputTokens * OUTPUT_COST_MICROUSD_PER_TOKEN };
+    } catch (error) {
+      if (!questionContext || !isTemporaryLLMAvailabilityError(error)) throw error;
+      assistantContent = getQuestionContextFallback(mode, questionContext);
+    }
   }
 
   const assistantMessage: TutorMessage = { role: "assistant", content: assistantContent, createdAt: new Date().toISOString() };

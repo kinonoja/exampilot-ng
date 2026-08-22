@@ -226,3 +226,5 @@
 - [x] Fix and verify Course Direction save, reload persistence, and learner-facing success/error feedback
 - [x] Reproduce and diagnose the incorrect-answer Practice-to-Tutor explanation handoff
 - [x] Fix and verify the Tutor deep link opens with the same question context and a clear ready-to-explain state
+- [x] Reproduce and diagnose the reported Tutor Guided and Direct response failure and identify whether it is transport, provider capacity, or application handling
+- [x] Fix and verify Tutor Direct and Guided failure states so they accurately distinguish a connection problem from temporary provider unavailability

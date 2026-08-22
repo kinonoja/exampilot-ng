@@ -14,6 +14,11 @@ describe("student error messages", () => {
     expect(getAssistantAvailabilityMessage(new Error("usage exhausted"), "Question generation")).toBe(TEMPORARY_ASSISTANT_UNAVAILABLE_MESSAGE);
   });
 
+  it("preserves the server availability message even when tRPC attaches HTTP 503 metadata", () => {
+    const error = Object.assign(new Error(TEMPORARY_ASSISTANT_UNAVAILABLE_MESSAGE), { data: { httpStatus: 503 } });
+    expect(getAssistantAvailabilityMessage(error, "Tutor")).toBe(TEMPORARY_ASSISTANT_UNAVAILABLE_MESSAGE);
+  });
+
   it("keeps a direct server message only when it is not a transport failure", () => {
     expect(getStudentFacingError(new Error("A valid topic is required."), "Fallback")).toBe("A valid topic is required.");
   });
