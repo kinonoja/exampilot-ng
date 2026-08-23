@@ -273,17 +273,17 @@
 - [x] Create or reuse a private GitHub repository and push the current verified project source
 - [x] Produce a deployment-safe Vercel environment-variable inventory without exposing secret values
 - [x] Confirm whether the current database is externally reachable or must be migrated before Vercel deployment
-- [ ] Provide the repository URL, exact Vercel variables, external TiDB Cloud status, and runtime-adaptation requirement directly in chat
-- [ ] Define the minimal Express-to-Vercel adaptation required before a Vercel deployment can run the authenticated API and frontend correctly
-- [ ] Implement the Vercel adaptation only after confirming the user wants the code change, without deploying or changing payment behavior
-- [ ] Hold Vercel runtime-adaptation implementation until Tutor and generation have a portable provider configuration
+- [x] Provide the repository URL, exact Vercel variables, external TiDB Cloud status, and runtime-adaptation requirement directly in chat
+- [x] Define the minimal Express-to-Vercel adaptation required before a Vercel deployment can run the authenticated API and frontend correctly
+- [x] Implement the Vercel adaptation only after confirming the user wants the code change, without deploying or changing payment behavior
+- [x] Record the user-authorised exception to complete the Vercel adapter while portable Tutor/generation migration remains pending
 - [x] Verify whether the current Manus Forge URL and API key are portable to Vercel or restricted to managed Manus hosting
 - [x] Document the Tutor and generation deployment risk and safe hosting alternatives before any Vercel runtime adaptation
 - [x] Map every current Forge-backed Tutor and generation call, prompt boundary, model selection, and failure mapper
 - [x] Produce and validate a direct Anthropic migration design that preserves Tutor policy, prompt, limits, fallback, and UI behavior
 - [ ] Request the user-owned `ANTHROPIC_API_KEY` securely only when implementation is ready
 - [ ] Replace Forge-backed calls with direct Anthropic calls and prove the Tutor/generation integration with focused tests and a live authorised check
-- [ ] Provide TiDB Cloud dashboard steps for a dedicated Vercel credential and network policy before external deployment
-- [ ] Design the minimal Express-to-Vercel serverless routing adaptation while preserving OAuth, tRPC, static delivery, and raw-body Paystack webhook handling
-- [ ] Implement and test the confirmed Vercel runtime adaptation without deploying or changing payment behavior
-- [ ] Push the Vercel adaptation and updated deployment documentation to the private GitHub repository
+- [x] Provide TiDB Cloud dashboard steps for a dedicated Vercel credential and network policy before external deployment
+- [x] Design the minimal Express-to-Vercel serverless routing adaptation while preserving OAuth, tRPC, static delivery, and raw-body Paystack webhook handling
+- [x] Implement and test the confirmed Vercel runtime adaptation without deploying or changing payment behavior
+- [x] Push the Vercel adaptation and updated deployment documentation to the private GitHub repository
