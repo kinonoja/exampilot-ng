@@ -4,7 +4,7 @@
 
 The source is published to the private GitHub repository: <https://github.com/kinonoja/exampilot-ng>.
 
-> **Important:** ExamPilot NG is not yet a direct one-click Vercel deployment. The current production command starts a long-running Express server (`node dist/index.js`), whereas Vercel requires the HTTP application to be adapted to its serverless-function model (or deployed to a Node host that supports a persistent Express process). Do not point Vercel at the repository until that adapter and its deployment validation are complete.
+> **Important:** The Express-to-serverless adapter is now implemented and passes the application test suite plus a Vercel-build check. It has **not** been deployed to Vercel. Domain-specific OAuth configuration, TiDB Cloud configuration, and a deployed smoke test remain prerequisites before directing student traffic to Vercel.
 
 Manus provides built-in hosting with custom-domain support. If Vercel remains the preferred host, the compatibility work below is required before relying on it for student traffic.
 
@@ -32,8 +32,11 @@ Set the following values in the **Production**, **Preview**, and **Development**
 | `OAUTH_SERVER_URL` | Yes | Server only | Exchanges OAuth authorization codes and reads user identity | Must be reachable from Vercel functions and compatible with the Vercel callback URL. |
 | `PAYSTACK_SECRET_KEY` | Yes for billing | Server only | Initializes, verifies, cancels, and validates Paystack events | Use a Test key in Vercel Preview; use the Live key only after the human-approved Live checklist. |
 | `PAYSTACK_PRO_PLAN_CODE` | Yes for billing | Server only | Paystack recurring-plan identifier used during checkout initialization | Must belong to the same Paystack mode as `PAYSTACK_SECRET_KEY`. |
-| `BUILT_IN_FORGE_API_URL` | Yes for Tutor/generation | Server only | Manus Forge endpoint used by the current LLM integration | External use is not assumed to be portable; confirm a production-compatible credential/endpoint before Vercel deployment. |
-| `BUILT_IN_FORGE_API_KEY` | Yes for Tutor/generation | Server only | Authorizes current LLM/Forge calls | Treat as non-exportable until Manus confirms an external-hosting-compatible credential path. |
+| `BUILT_IN_FORGE_API_URL` | **No** | Server only | Existing Manus-managed Forge endpoint | Do **not** put this in Vercel. It is not a verified portable Tutor/generation credential. |
+| `BUILT_IN_FORGE_API_KEY` | **No** | Server only | Existing Manus-managed Forge credential | Do **not** put this in Vercel. Migrate to the planned user-owned Anthropic credential first. |
+| `ANTHROPIC_API_KEY` | Required once Tutor/generation migration is complete | Server only | User-owned direct Anthropic API credential | Do not create/set until the direct-Anthropic migration is implemented and the model is confirmed in the user’s Anthropic account. |
+| `ANTHROPIC_TUTOR_MODEL` | Recommended after migration | Server only | Direct Anthropic model for Tutor | Use an enabled model ID from the user’s Anthropic account. |
+| `ANTHROPIC_GENERATION_MODEL` | Recommended after migration | Server only | Direct Anthropic model for practice generation | May initially match the Tutor model. |
 
 `NODE_ENV` is set by Vercel for production deployments; `PORT` must **not** be set manually. The current billing integration uses Paystack's server-created access code and does **not** consume `NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY`; it is therefore not required by the present code path. The project’s map component references `VITE_FRONTEND_FORGE_API_URL` and `VITE_FRONTEND_FORGE_API_KEY`, but that component is not part of the current ExamPilot student flow. Add those only if Maps is introduced into a deployed route and a portable Forge configuration has been approved.
 
@@ -43,14 +46,28 @@ The active `DATABASE_URL` resolves to `gateway05.us-east-1.prod.aws.tidbcloud.co
 
 The presently injected connection URL is managed by the existing environment and must not be copied from logs or source control. Before deploying to Vercel, create or obtain a dedicated TiDB Cloud connection credential, place it in Vercel as `DATABASE_URL`, and confirm the TiDB Cloud network policy permits Vercel function traffic. Use the TLS parameters from the TiDB Cloud connection panel exactly as issued.
 
+### TiDB Cloud dashboard steps for Vercel
+
+The preferred route is TiDB Cloud's Vercel integration because it provisions the Vercel project connection and creates the connection variables in Vercel automatically.[^tidb-vercel]
+
+1. Sign in to **Vercel** and create or open the ExamPilot project, but do not deploy yet.
+2. Open the **TiDB Cloud for Vercel** integration in the Vercel Marketplace, choose **Add Integration**, select the Vercel account/team and the ExamPilot project, and approve the requested connection scope.
+3. In the TiDB Cloud connection flow, select the intended TiDB Cloud organization, project, existing cluster, and the ExamPilot database. The integration then writes `DATABASE_URL` and its component variables to **Vercel → Project → Settings → Environment Variables**. Confirm the generated `DATABASE_URL` retains TiDB's TLS parameter (`sslaccept=strict` or the exact equivalent issued by TiDB Cloud).
+4. If the integration cannot be used, open **TiDB Cloud Console → Clusters → [your cluster] → Connect**. Create or reset a dedicated application password/SQL user using the cluster’s supported access flow, then copy the MySQL/TiDB connection string. Add that complete value as the server-only `DATABASE_URL` in Vercel for the intended environment(s). Do not paste it into GitHub, chat, or client-side `VITE_` variables.
+5. In TiDB Cloud, check the cluster plan and its **Networking/Traffic Filter** settings. For **Dedicated** clusters, Vercel's documented dynamic egress IPs require permitting `0.0.0.0/0` for public-function connectivity; apply the smallest available connection scope and rely on TLS plus the dedicated credential.[^tidb-vercel] For Starter/Essential, TiDB documents public endpoint access as allowing all IPs by default; still confirm the displayed policy before launch.[^tidb-netlify]
+6. After the Vercel adapter is deployed to a non-production preview, check the Vercel function log for one authenticated read-only page request and TiDB Cloud connection metrics for a successful connection. Do not run migrations or payment checkout as the first connectivity probe.
+
+[^tidb-vercel]: [TiDB Cloud, “Integrate TiDB Cloud with Vercel”](https://docs.pingcap.com/tidbcloud/integrate-tidbcloud-with-vercel/), accessed 23 August 2026.
+[^tidb-netlify]: [TiDB Cloud, “Integrate TiDB Cloud with Netlify”](https://docs.pingcap.com/tidbcloud/integrate-tidbcloud-with-netlify/), accessed 23 August 2026.
+
 ## Required Vercel adaptation and launch checks
 
-1. Convert the Express entry point into a Vercel Node function or choose a persistent Node host instead. The existing `build`/`start` scripts alone are not a Vercel serverless adapter.
+1. The Vercel adapter is implemented as `api/[...path].ts`, which serves the existing Express API app. `vercel.json` targets Node 22, retains `/api/*` routing, and sends non-API routes to the SPA `index.html`; the raw-body Paystack webhook registration remains before JSON parsing.
 2. Add the Vercel production and preview domains to the configured OAuth redirect allowlist. The callback path is `/api/oauth/callback`.
 3. Configure the Paystack webhook endpoint only after the final public domain is live: `https://<domain>/api/webhooks/paystack`.
 4. Run database migrations from a controlled deploy step against the dedicated TiDB Cloud URL; do not run destructive migrations automatically against production.
 5. Validate sign-in, Practice, Mock, and a Test Mode Paystack checkout on the deployed URL. Keep the separate human-authorized Live Mode payment checklist in force.
-6. Confirm whether Forge/Manus OAuth credentials are authorized for traffic originating from Vercel. Tutor and generation must remain truthfully unavailable if portability is not established.
+6. Complete the direct Anthropic migration before advertising Tutor/generation on Vercel. Do not copy Manus Forge credentials to Vercel.
 
 ## Non-sensitive deployment checklist
 
@@ -59,6 +76,6 @@ The presently injected connection URL is managed by the existing environment and
 | Source repository | Private GitHub repository created and pushed. |
 | Database location | External TiDB Cloud hostname; not sandbox-only. |
 | Database credentials ready for Vercel | Not yet: use dedicated Vercel/TiDB Cloud configuration. |
-| Direct Vercel server runtime support | Not yet: Express-to-serverless adaptation required. |
+| Direct Vercel server runtime support | Implemented and application-tested; not yet deployed or Vercel-smoke-tested. |
 | OAuth production-domain registration | Required before production sign-in. |
 | Paystack Live Mode transaction | Deferred pending explicit human authorization. |
