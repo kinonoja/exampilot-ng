@@ -11,11 +11,13 @@ vi.mock("./db", () => ({
   getStudentProfile: async () => ({ id: 1, subscriptionStatus: "free", subscriptionExpiresAt: null }),
 }));
 
-vi.mock("./_core/llm", () => ({
-  invokeLLM: async () => ({
-    choices: [{ message: { content: "Let’s start with the key idea." } }],
-    usage: { prompt_tokens: 120, completion_tokens: 24, total_tokens: 144 },
+vi.mock("./anthropic", () => ({
+  invokeAnthropic: async () => ({
+    text: "Let’s start with the key idea.",
+    inputTokens: 120,
+    outputTokens: 24,
   }),
+  isTemporaryAnthropicAvailabilityError: () => false,
 }));
 
 import { sendTutorMessage } from "./tutor";

@@ -2,7 +2,8 @@ import { and, desc, eq, gte, lt, sql } from "drizzle-orm";
 import { attempts, questions, subjects, topics, tutorConversations } from "../drizzle/schema";
 import { getTutorEntitlement } from "./entitlements";
 import { getDb, getStudentProfile } from "./db";
-import { invokeLLM } from "./_core/llm";
+import { invokeAnthropic, isTemporaryAnthropicAvailabilityError } from "./anthropic";
+import { ENV } from "./_core/env";
 import { INITIAL_MODE_MESSAGE, TUTOR_SYSTEM_PROMPT } from "./tutorPrompt";
 
 export type TutorMode = "direct" | "guided";
@@ -18,7 +19,7 @@ type TutorQuestionContext = {
   attemptWasCorrect: boolean | null;
 };
 
-const TUTOR_MODEL = "claude-haiku-4-5";
+const TUTOR_MODEL = ENV.anthropicTutorModel;
 const INPUT_COST_MICROUSD_PER_TOKEN = 1;
 const OUTPUT_COST_MICROUSD_PER_TOKEN = 5;
 
@@ -49,24 +50,6 @@ export function getTutorBoundaryResponse(message: string): string | null {
     return "I’m here to help with your revision, concepts, and practice questions. Ask me about a subject or question you are working on, and we can tackle it together.";
   }
   return null;
-}
-
-function textFromCompletion(content: unknown) {
-  if (typeof content === "string") return content.trim();
-  if (!Array.isArray(content)) return "";
-  return content
-    .filter((part): part is { type: "text"; text: string } =>
-      typeof part === "object" && part !== null && "type" in part && "text" in part &&
-      (part as { type?: unknown }).type === "text" && typeof (part as { text?: unknown }).text === "string",
-    )
-    .map(part => part.text)
-    .join("\n")
-    .trim();
-}
-
-function isTemporaryLLMAvailabilityError(error: unknown) {
-  const message = error instanceof Error ? error.message : String(error ?? "");
-  return /usage exhausted|precondition failed|llm invoke failed/i.test(message);
 }
 
 export function getQuestionContextFallback(mode: TutorMode, questionContext: TutorQuestionContext) {
@@ -200,21 +183,21 @@ export async function sendTutorMessage(userId: number, input: { conversationId: 
     };
     const recentMessages = [...history, userMessage].slice(-12).map(message => ({ role: message.role, content: message.content }));
     try {
-      const response = await invokeLLM({
+      // Anthropic's Messages API takes initial instructions in a top-level
+      // system field, so the prior prompt + session context system messages
+      // are combined there and the user/assistant history passes unchanged.
+      const response = await invokeAnthropic({
         model: TUTOR_MODEL,
-        max_tokens: 420,
-        messages: [
-          { role: "system", content: TUTOR_SYSTEM_PROMPT },
-          { role: "system", content: `SESSION CONTEXT\n${JSON.stringify(sessionContext)}` },
-          ...recentMessages,
-        ],
+        maxTokens: 420,
+        system: `${TUTOR_SYSTEM_PROMPT}\n\nSESSION CONTEXT\n${JSON.stringify(sessionContext)}`,
+        messages: recentMessages,
       });
-      assistantContent = textFromCompletion(response.choices[0]?.message.content ?? "") || "I’m sorry, I could not prepare that explanation. Please try again.";
-      const inputTokens = response.usage?.prompt_tokens ?? 0;
-      const outputTokens = response.usage?.completion_tokens ?? 0;
+      assistantContent = response.text || "I’m sorry, I could not prepare that explanation. Please try again.";
+      const inputTokens = response.inputTokens;
+      const outputTokens = response.outputTokens;
       usage = { inputTokens, outputTokens, estimatedCostMicrousd: inputTokens * INPUT_COST_MICROUSD_PER_TOKEN + outputTokens * OUTPUT_COST_MICROUSD_PER_TOKEN };
     } catch (error) {
-      if (!questionContext || !isTemporaryLLMAvailabilityError(error)) throw error;
+      if (!questionContext || !isTemporaryAnthropicAvailabilityError(error)) throw error;
       assistantContent = getQuestionContextFallback(mode, questionContext);
     }
   }

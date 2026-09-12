@@ -1,9 +1,10 @@
 import { and, desc, eq } from "drizzle-orm";
 import { exams, questions, subjects, topics, type QuestionOption } from "../drizzle/schema";
 import { getDb } from "./db";
-import { invokeLLM } from "./_core/llm";
+import { invokeAnthropic } from "./anthropic";
+import { ENV } from "./_core/env";
 
-const GENERATION_MODEL = "claude-haiku-4-5";
+const GENERATION_MODEL = ENV.anthropicGenerationModel;
 const AI_GENERATION_SOURCE = "ExamPilot AI Practice Generation v1";
 const optionKeys = ["A", "B", "C", "D"] as const;
 
@@ -177,16 +178,51 @@ ${context.existingQuestionTexts.map((text, index) => `${index + 1}. ${text}`).jo
 
 export async function generateTopicPracticeQuestions(input: { topicId: number; count: number }) {
   const context = await getGenerationContext(input.topicId);
-  const response = await invokeLLM({
+  // Anthropic structured outputs constrain the model to this question shape;
+  // the app's independent parsing and quality validation remain the gate.
+  const response = await invokeAnthropic({
     model: GENERATION_MODEL,
-    max_tokens: 3200,
+    maxTokens: 3200,
+    system: "You generate original, accurate exam-preparation questions in strict JSON only.",
     messages: [
-      { role: "system", content: "You generate original, accurate exam-preparation questions in strict JSON only." },
       { role: "user", content: generationPrompt(context, input.count) },
     ],
-    response_format: { type: "json_object" },
+    outputSchema: {
+      type: "object",
+      properties: {
+        questions: {
+          type: "array",
+          items: {
+            type: "object",
+            properties: {
+              difficulty: { type: "string", enum: ["easy", "medium", "hard"] },
+              questionText: { type: "string" },
+              options: {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: {
+                    key: { type: "string", enum: ["A", "B", "C", "D"] },
+                    text: { type: "string" },
+                  },
+                  required: ["key", "text"],
+                  additionalProperties: false,
+                },
+              },
+              correctAnswer: { type: "string", enum: ["A", "B", "C", "D"] },
+              explanation: { type: "string" },
+              tags: { type: "array", items: { type: "string" } },
+            },
+            required: ["difficulty", "questionText", "options", "correctAnswer", "explanation", "tags"],
+            additionalProperties: false,
+          },
+        },
+      },
+      required: ["questions"],
+      additionalProperties: false,
+    },
   });
-  const questionsToInsert = validateGeneratedQuestionSet(parseGeneratedQuestionPayload(response.choices[0]?.message.content ?? "{}"), input.count);
+  const questionsToInsert = validateGeneratedQuestionSet(parseGeneratedQuestionPayload(response.text || "{}"), input.count);
   const existingNormalized = new Set(context.existingQuestionTexts.map(normalizeQuestion));
   if (questionsToInsert.some(question => existingNormalized.has(normalizeQuestion(question.questionText)))) {
     throw new Error("Claude returned wording already in this topic. Please try generating again.");
