@@ -22,7 +22,7 @@ export const tutorModeValues = ["direct", "guided"] as const;
 export const institutionPlanningStatusValues = ["not_sure", "provided"] as const;
 export const institutionValidationStatusValues = ["not_checked", "verified"] as const;
 
-/** Core identity record supplied by Manus OAuth and enriched by student onboarding. */
+/** Core identity record supplied by the application OAuth flow and enriched by student onboarding. */
 export const users = mysqlTable("users", {
   id: int("id").autoincrement().primaryKey(),
   openId: varchar("openId", { length: 64 }).notNull().unique(),
