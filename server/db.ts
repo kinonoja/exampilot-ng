@@ -32,7 +32,11 @@ export async function getDb() {
       // Hold the pool reference ourselves so closeDb() can end it; drizzle's
       // string shorthand hides the pool and leaks its socket on exit.
       _dbPool = mysql.createPool(process.env.DATABASE_URL);
-      _db = drizzle(_dbPool);
+      // mysql2 exposes the promise-pool type from a different declaration
+      // path than Drizzle's mysql2 adapter. The runtime object is the pool
+      // Drizzle expects; keep the boundary cast local to this adapter call so
+      // the rest of the database layer remains fully typed.
+      _db = drizzle(_dbPool as any);
     } catch (error) {
       console.warn("[Database] Failed to connect:", error);
       _db = null;
