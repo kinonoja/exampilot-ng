@@ -4,8 +4,12 @@ import { registerOAuthRoutes } from "./oauth";
 import { registerStorageProxy } from "./storageProxy";
 import { appRouter } from "../routers";
 import { createContext } from "./context";
+import * as db from "../db";
 import { handlePaystackWebhook, isValidPaystackSignature } from "../paystack";
 import { createCriticalFlowLog } from "../observability";
+import { COOKIE_NAME, ONE_YEAR_MS } from "@shared/const";
+import { getSessionCookieOptions } from "./cookies";
+import { sdk } from "./sdk";
 
 /**
  * Creates the API-only Express application shared by the long-running local
@@ -53,6 +57,35 @@ export function createExamPilotApiApp() {
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
   registerStorageProxy(app);
   registerOAuthRoutes(app);
+
+  // Local-only escape hatch for development when the OAuth portal cannot be
+  // configured for localhost. It is disabled unless explicitly opted in and
+  // is never available on a non-local host or in production.
+  app.get("/api/dev/login", async (req, res) => {
+    const isLocalHost = ["localhost", "127.0.0.1", "::1"].includes(req.hostname);
+    if (
+      process.env.NODE_ENV !== "development" ||
+      process.env.ENABLE_LOCAL_AUTH !== "true" ||
+      !isLocalHost
+    ) {
+      res.sendStatus(404);
+      return;
+    }
+
+    const openId = process.env.LOCAL_DEV_OPEN_ID ?? "local-dev-learner";
+    const name = process.env.LOCAL_DEV_NAME ?? "Local Learner";
+    const email = process.env.LOCAL_DEV_EMAIL ?? "local-learner@example.test";
+    await db.upsertUser({ openId, name, email, loginMethod: "local-development" });
+    const sessionToken = await sdk.createSessionToken(openId, {
+      name,
+      expiresInMs: ONE_YEAR_MS,
+    });
+    res.cookie(COOKIE_NAME, sessionToken, {
+      ...getSessionCookieOptions(req),
+      maxAge: ONE_YEAR_MS,
+    });
+    res.redirect(302, "/dashboard");
+  });
 
   app.use("/api/trpc", (req, res, next) => {
     const requestId = crypto.randomUUID();
