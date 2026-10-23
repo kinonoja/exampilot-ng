@@ -33,10 +33,10 @@ Set the following values in the **Production**, **Preview**, and **Development**
 | `PAYSTACK_SECRET_KEY` | Yes for billing | Server only | Initializes, verifies, cancels, and validates Paystack events | Use a Test key in Vercel Preview; use the Live key only after the human-approved Live checklist. |
 | `PAYSTACK_PRO_PLAN_CODE` | Yes for billing | Server only | Paystack recurring-plan identifier used during checkout initialization | Must belong to the same Paystack mode as `PAYSTACK_SECRET_KEY`. |
 | `BUILT_IN_FORGE_API_URL` | **No** | Server only | Existing Manus-managed Forge endpoint | Do **not** put this in Vercel. It is not a verified portable Tutor/generation credential. |
-| `BUILT_IN_FORGE_API_KEY` | **No** | Server only | Existing Manus-managed Forge credential | Do **not** put this in Vercel. Migrate to the planned user-owned Anthropic credential first. |
-| `ANTHROPIC_API_KEY` | Required once Tutor/generation migration is complete | Server only | User-owned direct Anthropic API credential | Do not create/set until the direct-Anthropic migration is implemented and the model is confirmed in the user’s Anthropic account. |
-| `ANTHROPIC_TUTOR_MODEL` | Recommended after migration | Server only | Direct Anthropic model for Tutor | Use an enabled model ID from the user’s Anthropic account. |
-| `ANTHROPIC_GENERATION_MODEL` | Recommended after migration | Server only | Direct Anthropic model for practice generation | May initially match the Tutor model. |
+| `BUILT_IN_FORGE_API_KEY` | **No** | Server only | Existing Manus-managed Forge credential | Do **not** put this in Vercel. Tutor/generation now use the direct Anthropic client below. |
+| `ANTHROPIC_API_KEY` | **Yes** | Server only | User-owned direct Anthropic API credential | The direct-Anthropic migration is implemented (`server/anthropic.ts`); set this in Vercel after local validation passes and the model is confirmed enabled in the user’s Anthropic account. |
+| `ANTHROPIC_TUTOR_MODEL` | Recommended | Server only | Direct Anthropic model for Tutor | Defaults to `claude-haiku-4-5-20251001` if unset. Use an enabled model ID from the user’s Anthropic account. |
+| `ANTHROPIC_GENERATION_MODEL` | Recommended | Server only | Direct Anthropic model for practice generation | Defaults to `claude-haiku-4-5-20251001` if unset. May initially match the Tutor model. |
 
 `NODE_ENV` is set by Vercel for production deployments; `PORT` must **not** be set manually. The current billing integration uses Paystack's server-created access code and does **not** consume `NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY`; it is therefore not required by the present code path. The project’s map component references `VITE_FRONTEND_FORGE_API_URL` and `VITE_FRONTEND_FORGE_API_KEY`, but that component is not part of the current ExamPilot student flow. Add those only if Maps is introduced into a deployed route and a portable Forge configuration has been approved.
 

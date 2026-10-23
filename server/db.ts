@@ -9,6 +9,7 @@ import {
   type SQL,
 } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
+import mysql from "mysql2/promise";
 import {
   attempts,
   exams,
@@ -22,18 +23,32 @@ import {
 import { ENV } from "./_core/env";
 
 let _db: ReturnType<typeof drizzle> | null = null;
+let _dbPool: mysql.Pool | null = null;
 
 // Lazily create the database client so local tooling remains usable without a DB.
 export async function getDb() {
   if (!_db && process.env.DATABASE_URL) {
     try {
-      _db = drizzle(process.env.DATABASE_URL);
+      // Hold the pool reference ourselves so closeDb() can end it; drizzle's
+      // string shorthand hides the pool and leaks its socket on exit.
+      _dbPool = mysql.createPool(process.env.DATABASE_URL);
+      _db = drizzle(_dbPool);
     } catch (error) {
       console.warn("[Database] Failed to connect:", error);
       _db = null;
+      _dbPool = null;
     }
   }
   return _db;
+}
+
+// Close the shared pool so test workers and scripts exit without a leaked socket.
+export async function closeDb() {
+  _db = null;
+  if (_dbPool) {
+    await _dbPool.end();
+    _dbPool = null;
+  }
 }
 
 export async function upsertUser(user: InsertUser): Promise<void> {
