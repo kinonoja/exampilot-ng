@@ -1,6 +1,6 @@
-// Preconfigured storage helpers for the application storage layer
+// Preconfigured storage helpers for Manus WebDev templates
 // Uploads via Forge Server presigned URL to S3 (PUT direct).
-// Downloads return application storage paths served via 307 redirect.
+// Downloads return /manus-storage/{key} paths served via 307 redirect.
 
 import { ENV } from "./_core/env";
 
